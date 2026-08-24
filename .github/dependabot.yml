@@ -1,0 +1,16 @@
+# Keep the pinned actions current.
+#
+# This file serves every repository that calls a workflow from here, because
+# the action pins live in this repository now and nowhere else.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 5
+    groups:
+      github-actions:
+        patterns:
+          - "*"
