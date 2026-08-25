@@ -12,10 +12,14 @@ Run both checks from the repository root:
 ./tests/all
 ```
 
-Every repository here uses those two paths. `tests/shellcheck.sh` lints the
-scripts and `tests/all` runs the suite. Continuous integration runs the same
-two commands, on Linux and on macOS, so a green run on your computer is a
-good sign but not the whole answer.
+Those two paths are the convention for a repository whose CI calls the
+shared `shell-tests.yml` workflow: `tests/all` runs the suite and
+`tests/shellcheck.sh` lints the scripts. A repository that does not call it
+may name its tests differently — check its own README.
+
+Where CI does run, the suite runs on Linux and on macOS and the linter runs
+once on Linux, so a green run on your computer is a good sign but not the
+whole answer.
 
 ## What we look for
 
