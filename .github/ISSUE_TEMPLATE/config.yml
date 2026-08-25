@@ -1,0 +1,11 @@
+# Blank issues stay enabled. Forcing every thought through a form is right
+# for a busy project and wrong for a small one -- most of what arrives here
+# is not a bug report and should not have to pretend to be.
+blank_issues_enabled: true
+
+contact_links:
+  # This is the point of the file. It catches someone at the moment they
+  # would otherwise file a vulnerability as a public issue.
+  - name: Report a security vulnerability
+    url: https://github.com/mattgrul/.github/blob/main/SECURITY.md
+    about: Never open a public issue for a vulnerability. Use private reporting.

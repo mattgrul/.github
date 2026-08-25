@@ -1,25 +1,14 @@
 # Contributing
 
-Thank you for looking. These are small repositories, so the process is
-short.
+Thank you for looking. The process is short.
 
 ## Before you open a pull request
 
-Run both checks from the repository root:
+Run whatever checks the repository documents. Its README says how, and the
+commands differ from one repository to the next.
 
-```bash
-./tests/shellcheck.sh
-./tests/all
-```
-
-Those two paths are the convention for a repository whose CI calls the
-shared `shell-tests.yml` workflow: `tests/all` runs the suite and
-`tests/shellcheck.sh` lints the scripts. A repository that does not call it
-may name its tests differently — check its own README.
-
-Where CI does run, the suite runs on Linux and on macOS and the linter runs
-once on Linux, so a green run on your computer is a good sign but not the
-whole answer.
+Where continuous integration runs, it runs those same checks. A green run on
+your computer is a good sign, not the whole answer.
 
 ## What we look for
 
@@ -30,13 +19,6 @@ whole answer.
   shape, and its names.
 - **A reason in the commit message.** The diff says what changed. The
   message says why.
-
-## Shell scripts here target bash 3.2
-
-macOS ships bash 3.2.57 at `/bin/bash`, and these scripts use `#!/bin/bash`,
-so that is the version a Mac runs. No associative arrays, no `${x^^}`, no
-`mapfile`. Linux ships bash 5, so your computer will not catch a mistake
-here. Continuous integration will.
 
 ## Allow edits from maintainers
 

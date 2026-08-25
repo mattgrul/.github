@@ -13,9 +13,3 @@ Tell us what you can:
 
 We answer within seven days. If a report is valid, we agree a disclosure
 date with you before we publish anything.
-
-These repositories are shell installers that run on your own computer, under
-your own account. The risks worth reporting are the ones that cross that
-line: a path a script writes outside the folders it declares, a file it
-takes from the network without checking, or a way a third party changes what
-it runs.
