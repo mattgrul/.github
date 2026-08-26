@@ -1,0 +1,46 @@
+# Inherited by every repository this account owns, so it assumes nothing
+# about a language, a runtime or a subject. The first two fields are the
+# shape of a good proposal in any domain: the problem first, the change
+# second. A proposal that names only the change hides what it is for.
+name: Feature request
+description: A new feature or an improvement
+# A category role and a state role, which is what a triaged issue carries.
+# Both labels must exist in every repository this template reaches, or
+# GitHub drops the missing one without a warning.
+labels: [enhancement, needs-triage]
+
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve
+      description: Describe the problem, not the change you have in mind.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you want to happen
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: What you considered instead
+      description: Anything you tried, and why it fell short.
+    validations:
+      required: false
+
+  - type: dropdown
+    id: help
+    attributes:
+      label: Would you help build it
+      description: A proposal nobody implements stays a proposal.
+      options:
+        - "Yes, I would write it"
+        - "Yes, with some guidance"
+        - "No"
+    validations:
+      required: false

@@ -4,7 +4,10 @@
 # asks for relevant context without assuming specific tools.
 name: Bug report
 description: Something behaves differently from how it should
-labels: [bug]
+# A category role and a state role, which is what a triaged issue carries.
+# Both labels must exist in every repository this template reaches, or
+# GitHub drops the missing one without a warning.
+labels: [bug, needs-triage]
 
 body:
   - type: textarea

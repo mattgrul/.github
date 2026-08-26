@@ -27,15 +27,17 @@ there sinks under them and gets no better answer for the wait.
 
 ## Proposing a change
 
-Open a discussion before you write a feature. Say what problem it
-solves, not only what it adds, and wait for an answer before you start.
-This saves you from writing something we then decline. If the repository
-has no Discussions tab, open an issue instead.
+Open the **Feature request** form on the repository it affects. Say what
+problem it solves, not only what it adds. Wait for an answer before you
+write the feature. This saves you from writing something we then decline.
+
+Use an issue, not a discussion. An accepted proposal becomes work, and
+work is tracked on the issue tracker.
 
 Be ready to write some of the code you propose. A proposal nobody
 implements stays a proposal.
 
-A bug fix, a typo or a broken link needs no discussion. Send the pull
+A bug fix, a typo or a broken link needs no proposal. Send the pull
 request.
 
 ## Which branch?
