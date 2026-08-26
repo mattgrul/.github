@@ -7,5 +7,5 @@ contact_links:
   # This is the point of the file. It catches someone at the moment they
   # would otherwise file a vulnerability as a public issue.
   - name: Report a security vulnerability
-    url: https://github.com/mattgrul/.github/blob/main/SECURITY.md
-    about: Never open a public issue for a vulnerability. Use private reporting.
+    url: https://github.com/mattgrul/.github/security/policy
+    about: Never open a public issue. Use the repository's Security tab.

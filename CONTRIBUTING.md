@@ -8,17 +8,19 @@ in it, belongs in its README.
 
 ## Bug reports
 
-Open an issue on the repository it affects. The form asks what happened,
-what you expected instead, and how to reproduce it. Answer all three.
+Open the **Bug report** form on the repository it affects. The form asks
+what happened, what you expected instead, and how to reproduce it. Answer
+all three.
 
 A bug report starts a conversation, not a fix. Write it in the hope that
 somebody with the same problem solves it with you. That somebody may be
-you: the source is public, so fork it and send a pull request.
+you: where the source is public, fork it and send a pull request.
 
 ## Support questions
 
 Do not open an issue to ask how something works. Use the Discussions tab
-on the repository it concerns.
+on the repository it concerns. If the repository has no Discussions tab,
+open an issue instead.
 
 An issue tracker records defects and agreed work. A question posted
 there sinks under them and gets no better answer for the wait.
@@ -27,7 +29,8 @@ there sinks under them and gets no better answer for the wait.
 
 Open a discussion before you write a feature. Say what problem it
 solves, not only what it adds, and wait for an answer before you start.
-This saves you from writing something we then decline.
+This saves you from writing something we then decline. If the repository
+has no Discussions tab, open an issue instead.
 
 Be ready to write some of the code you propose. A proposal nobody
 implements stays a proposal.
@@ -53,7 +56,8 @@ We look for these:
 
 - **One change per pull request.** A fix and a rename in one branch take
   twice as long to read.
-- **A test that fails without your change.** For a bug, write it first.
+- **A test that fails without your change**, where the repository has
+  tests. For a bug, write it first.
 - **A reason in the commit message.** The diff says what changed. The
   message says why.
 - **Source, not output.** Do not commit a generated or compiled file.
@@ -61,6 +65,8 @@ We look for these:
   source.
 - **Allow edits by maintainers.** Leave the box ticked. It lets us
   rebase your branch or fix a typo without asking you to push again.
+- **The receiving repository's license.** Your contribution uses the terms
+  in that repository's `LICENSE`.
 
 ## Security vulnerabilities
 

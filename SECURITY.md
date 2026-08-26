@@ -5,6 +5,10 @@ it affects: open its **Security** tab and choose **Report a vulnerability**.
 That opens a private thread with the maintainer. Do not open a public issue
 for a vulnerability.
 
+A private repository has no **Report a vulnerability** option. GitHub
+offers private reporting on public repositories only. Contact the
+maintainer directly.
+
 Tell us what you can:
 
 - The repository and the version or commit you tested.

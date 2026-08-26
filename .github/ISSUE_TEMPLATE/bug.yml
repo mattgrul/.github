@@ -1,7 +1,7 @@
 # Inherited by every repository this account owns, so it assumes nothing
 # about a language, a runtime or an operating system. The first three fields
-# are the shape of a good bug report in any domain. Anything more specific
-# belongs in the placeholder, where it guides without constraining.
+# are the shape of a good bug report in any domain. The environment field
+# asks for relevant context without assuming specific tools.
 name: Bug report
 description: Something behaves differently from how it should
 labels: [bug]
@@ -36,7 +36,6 @@ body:
       description: Whatever is relevant here.
       placeholder: |
         Your operating system, and the version of whatever this uses.
-        For example: bash --version, tofu version, node --version
     validations:
       required: false
 
