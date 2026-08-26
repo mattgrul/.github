@@ -44,17 +44,14 @@ That is the whole test.
 
 ## What is deliberately absent
 
-`CODE_OF_CONDUCT.md` names a contact and promises a process, so it waits
-until there is a public repository with contributors to have conduct.
+`CODE_OF_CONDUCT.md` names a contact and promises a process, so the rules
+sit at the end of `CONTRIBUTING.md` instead, where they need neither.
 `FUNDING.yml` would put a Sponsor button on private repositories.
 `GOVERNANCE.md` describes decision-making among several maintainers.
 `SUPPORT.md` is a second door saying what `CONTRIBUTING.md` already says. A
 pull request template, with one maintainer, would only nag its author.
 
-## Reusable workflows are not here
-
-They live in [`workflows`](https://github.com/mattgrul/workflows).
-
-Nothing inherits a workflow — a caller names it — so those files may be
-specific about a language or a runtime, which is exactly what nothing here
-may be. `shell-tests.yml` lived here once and left for that reason.
+`.github/workflows/` held a shared shell test workflow once. Nothing
+inherits a workflow — a caller names it — so it may name a language or a
+runtime, which is what nothing here may do. Every repository that needs
+that workflow now carries its own copy.
