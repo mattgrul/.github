@@ -1,27 +1,98 @@
 # Contributing
 
-Thank you for looking. The process is short.
+Thank you for looking.
 
-## Before you open a pull request
+This file serves every repository this account owns, so it says nothing
+about any one of them. What a repository is, and how to check your work
+in it, belongs in its README.
 
-Run whatever checks the repository documents. Its README says how, and the
-commands differ from one repository to the next.
+## Bug reports
 
-Where continuous integration runs, it runs those same checks. A green run on
-your computer is a good sign, not the whole answer.
+Open an issue on the repository it affects. The form asks what happened,
+what you expected instead, and how to reproduce it. Answer all three.
 
-## What we look for
+A bug report starts a conversation, not a fix. Write it in the hope that
+somebody with the same problem solves it with you. That somebody may be
+you: the source is public, so fork it and send a pull request.
+
+## Support questions
+
+Do not open an issue to ask how something works. Use the Discussions tab
+on the repository it concerns.
+
+An issue tracker records defects and agreed work. A question posted
+there sinks under them and gets no better answer for the wait.
+
+## Proposing a change
+
+Open a discussion before you write a feature. Say what problem it
+solves, not only what it adds, and wait for an answer before you start.
+This saves you from writing something we then decline.
+
+Be ready to write some of the code you propose. A proposal nobody
+implements stays a proposal.
+
+A bug fix, a typo or a broken link needs no discussion. Send the pull
+request.
+
+## Which branch?
+
+Always `main`. Branch from it, and open your pull request against it.
+
+There are no version branches. A release is a tag cut from `main`, so no
+older version has a branch to target.
+
+## Pull requests
+
+Run the repository's checks first. Its README says how, and the commands
+differ from one repository to the next. Where continuous integration
+runs, it runs those same checks, so a green run on your computer is a
+good sign rather than the whole answer.
+
+We look for these:
 
 - **One change per pull request.** A fix and a rename in one branch take
   twice as long to read.
 - **A test that fails without your change.** For a bug, write it first.
-- **The style of the file you are editing.** Match its wrapping, its comment
-  shape, and its names.
 - **A reason in the commit message.** The diff says what changed. The
   message says why.
+- **Source, not output.** Do not commit a generated or compiled file.
+  Nobody can review one, and it can carry code that is not in the
+  source.
+- **Allow edits by maintainers.** Leave the box ticked. It lets us
+  rebase your branch or fix a typo without asking you to push again.
 
-## Allow edits from maintainers
+## Security vulnerabilities
 
-Leave **Allow edits by maintainers** ticked when you open the pull request.
-It lets us rebase your branch or fix a typo without asking you to push
-again.
+Never open a public issue for a vulnerability. Report it through the
+repository's **Security** tab, which opens a private thread with the
+maintainer. `SECURITY.md` says what to include and how fast we answer.
+
+## Coding style
+
+Match the file you are editing. Follow its wrapping, its names, and the
+shape of its comments. Consistency inside one file beats any rule from
+outside it.
+
+Where a repository documents a style or carries a formatter, that wins.
+Its README says so.
+
+## AI-assisted contributions
+
+Use whatever tools help you. Review, test and understand every line
+before you send it.
+
+We do not accept a contribution that is mostly generated and never
+thought about. We close a bulk run of generated issues or pull requests
+without review, and we may block the account that sent it.
+
+Read the code first. Send work that shows your own understanding of the
+problem you solve.
+
+## Code of conduct
+
+- Tolerate a view you disagree with.
+- Keep personal attacks and disparaging remarks out of your words and
+  your actions.
+- Assume the other person means well. Text carries no tone.
+- We do not tolerate harassment.
