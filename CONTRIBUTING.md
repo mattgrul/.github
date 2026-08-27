@@ -42,10 +42,18 @@ request.
 
 ## Which branch?
 
-Always `main`. Branch from it, and open your pull request against it.
+Branch from `main`, and open your pull request against it. For almost
+every change that is the whole answer.
 
-There are no version branches. A release is a tag cut from `main`, so no
-older version has a branch to target.
+A repository may also carry a branch named `N.x` — `1.x`, `2.x` — one for
+each released major version. A repository grows one only when it has to
+patch an older major after a newer one starts, so most repositories here
+have none. Where one exists, send a bug fix for that major to its branch.
+Send a feature, and anything that breaks compatibility, to `main`.
+
+If you cannot tell which branch your change belongs on, open the pull
+request against `main` and say so in it. We would rather move it than
+lose it.
 
 ## Pull requests
 
@@ -53,6 +61,11 @@ Run the repository's checks first. Its README says how, and the commands
 differ from one repository to the next. Where continuous integration
 runs, it runs those same checks, so a green run on your computer is a
 good sign rather than the whole answer.
+
+Every pull request lands squashed. Your commits become one commit on the
+target branch, named after the pull request title, and that title is the
+line the release notes carry. Write it as the sentence you want a reader
+to find there.
 
 We look for these:
 
@@ -69,6 +82,15 @@ We look for these:
   rebase your branch or fix a typo without asking you to push again.
 - **The receiving repository's license.** Your contribution uses the terms
   in that repository's `LICENSE`.
+
+## Releases
+
+We release when a change is worth releasing. There is no schedule and no
+release day.
+
+A version follows semver, tagged `vMAJOR.MINOR.PATCH`. A workflow cuts
+the tag and writes the release notes from the pull request titles it
+contains. Nobody tags by hand.
 
 ## Security vulnerabilities
 
