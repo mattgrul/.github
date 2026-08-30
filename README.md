@@ -86,8 +86,42 @@ and every stock template names a contact and promises a reporting
 process. This account runs neither, so `CODE_OF_CONDUCT.md` is written
 here instead and forgoes the tick.
 
-`.github/workflows/` held a shared shell test workflow once. Nothing
-inherits a workflow — a caller names it — so it may name a language or a
-runtime, which is what nothing here may do. `.github/dependabot.yml` went
-with it. That file existed only to keep the workflow's action pins
-current.
+## The one workflow here
+
+Nothing inherits a workflow. `.github/workflows/release.yml` is called,
+not inherited. A repository that releases carries a caller that names
+this file by its path and a commit SHA, and the body lives here once.
+
+```yaml
+# .github/workflows/release.yml, in a repository that releases
+name: Release
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        type: choice
+        options: [patch, minor, major]
+jobs:
+  release:
+    uses: mattgrul/.github/.github/workflows/release.yml@COMMIT_SHA
+    # A called workflow cannot hold more than its caller grants, and
+    # every repository here defaults its token to read.
+    permissions:
+      contents: write
+    with:
+      bump: ${{ inputs.bump }}
+```
+
+It is allowed here because it names no language and no runtime. It reads
+the newest tag, raises the part you choose, and asks GitHub to write the
+notes from the pull request titles merged since. A test workflow cannot
+pass that test — it must name a runtime — so this repository holds none.
+
+It creates a tag and a release, and commits nothing. The ruleset on a
+protected branch lets only a repository admin push to it, and the token
+in a workflow is not one. A branch ruleset does not restrict a tag, so
+the version lives in the tag. A repository that also carries a version
+in a file bumps it in the pull request, like any other change.
+
+There is no `.github/dependabot.yml`. Nothing inherits one, and the
+release workflow pins no action to keep current.
