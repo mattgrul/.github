@@ -16,6 +16,7 @@ repository for default files.
 |---|---|
 | `SECURITY.md` | yes |
 | `CONTRIBUTING.md` | yes |
+| `CODE_OF_CONDUCT.md` | yes |
 | `.github/ISSUE_TEMPLATE/` | yes, all or nothing |
 | `README.md` | no — this page only |
 | `LICENSE` | **never** |
@@ -73,14 +74,17 @@ is why "Which branch?" asks for judgement instead of promising a check.
 
 ## What is deliberately absent
 
-`CODE_OF_CONDUCT.md` names a contact and promises a process, so the rules
-sit at the end of `CONTRIBUTING.md` instead, where they need neither.
 `FUNDING.yml` would advertise sponsorship, but this account accepts none.
-`GOVERNANCE.md` describes decision-making among several maintainers.
 `SUPPORT.md` is a second door saying what `CONTRIBUTING.md` already says. A
 pull request template, with one maintainer, would only nag its author.
 Discussion category forms describe what a repository discusses, which is
 what nothing here may do.
+
+The tick beside "Code of conduct" on GitHub's community profile is also
+absent, and stays absent. GitHub awards it only for a stock template,
+and every stock template names a contact and promises a reporting
+process. This account runs neither, so `CODE_OF_CONDUCT.md` is written
+here instead and forgoes the tick.
 
 `.github/workflows/` held a shared shell test workflow once. Nothing
 inherits a workflow — a caller names it — so it may name a language or a
