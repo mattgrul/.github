@@ -15,5 +15,5 @@ Tell us what you can:
 - What an attacker reaches, and what they need first.
 - The steps that reproduce it.
 
-We answer within seven days. If a report is valid, we agree a disclosure
+We answer as soon as we can. If a report is valid, we agree a disclosure
 date with you before we publish anything.
