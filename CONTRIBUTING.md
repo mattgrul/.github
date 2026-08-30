@@ -121,8 +121,5 @@ problem you solve.
 
 ## Code of conduct
 
-- Tolerate a view you disagree with.
-- Keep personal attacks and disparaging remarks out of your words and
-  your actions.
-- Assume the other person means well. Text carries no tone.
-- We do not tolerate harassment.
+`CODE_OF_CONDUCT.md` holds the standard. It applies wherever you reach
+us: an issue, a pull request, a discussion or a review.
