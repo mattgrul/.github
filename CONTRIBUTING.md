@@ -34,7 +34,7 @@ write the feature. This saves you from writing something we then decline.
 Use an issue, not a discussion. An accepted proposal becomes work, and
 work is tracked on the issue tracker.
 
-Be ready to write some of the code you propose. A proposal nobody
+Be ready to write some of the work you propose. A proposal nobody
 implements stays a proposal.
 
 A bug fix, a typo or a broken link needs no proposal. Send the pull
@@ -57,10 +57,10 @@ lose it.
 
 ## Pull requests
 
-Run the repository's checks first. Its README says how, and the commands
-differ from one repository to the next. Where continuous integration
-runs, it runs those same checks, so a green run on your computer is a
-good sign rather than the whole answer.
+Run the repository's checks first, where it has them. Its README says
+how, and the commands differ from one repository to the next. Where
+continuous integration runs, it runs those same checks, so a green run
+on your computer is a good sign rather than the whole answer.
 
 Every pull request lands squashed. Your commits become one commit on the
 target branch, named after the pull request title, and that title is the
@@ -71,13 +71,13 @@ We look for these:
 
 - **One change per pull request.** A fix and a rename in one branch take
   twice as long to read.
-- **A test that fails without your change**, where the repository has
-  tests. For a bug, write it first.
+- **A test that fails without your change.** This applies where the
+  repository has tests. Write that test before you fix a bug.
 - **A reason in the commit message.** The diff says what changed. The
   message says why.
-- **Source, not output.** Do not commit a generated or compiled file.
-  Nobody can review one, and it can carry code that is not in the
-  source.
+- **Source, not output.** Do not commit a generated or compiled file,
+  unless the repository says it tracks one. Nobody can review a
+  generated file, and one can carry what is not in the source.
 - **Allow edits by maintainers.** Leave the box ticked. It lets us
   rebase your branch or fix a typo without asking you to push again.
 - **The receiving repository's license.** Your contribution uses the terms

@@ -38,7 +38,7 @@ body:
       label: Environment
       description: Whatever is relevant here.
       placeholder: |
-        Your operating system, and the version of whatever this uses.
+        The versions and the conditions that affect the problem.
     validations:
       required: false
 

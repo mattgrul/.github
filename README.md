@@ -23,6 +23,10 @@ repository for default files.
 A repository with its own copy of a file uses that one and ignores this one.
 That is the only way to opt out.
 
+A repository that needs its own guide does not have to repeat this one.
+Keep the local file short, link back to the copy here, and add only what
+is true in that repository.
+
 Issue templates are all or nothing: a repository with any file in its own
 `.github/ISSUE_TEMPLATE/` ignores every template here.
 
@@ -44,6 +48,28 @@ is cloned, packaged, or downloaded."* Every repository needs its own.
 A future repository might be a library, a web application, a font, a
 dataset. A sentence that reads oddly on any of those does not belong here.
 That is the whole test.
+
+## What holds these words true
+
+Three sentences here describe behaviour that another repository
+configures. `mattgrul/personal-infra` holds those settings as code, so a
+change there can make a sentence here false, and nothing warns you.
+
+- The issue forms set `labels:` on a new issue. `personal-infra` gives
+  every repository the same labels, which is the only reason a form here
+  can name `bug`, `enhancement` and `needs-triage`. Rename one there and
+  GitHub drops it from the form without a word.
+- "Every pull request lands squashed ... named after the pull request
+  title" is a merge setting: squash only, title taken from the pull
+  request.
+- "A reason in the commit message" holds because the squashed commit
+  keeps the branch's commit messages as its body. Take that body from
+  the pull request instead and the line stops being true.
+
+One thing no setting enforces: which branch a contributor starts from.
+The ruleset protects `main` and each `N.x` from a direct push and a
+force push. It does not choose the branch a pull request targets, which
+is why "Which branch?" asks for judgement instead of promising a check.
 
 ## What is deliberately absent
 
