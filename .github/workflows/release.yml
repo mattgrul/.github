@@ -1,0 +1,78 @@
+# A release workflow that a repository calls by name. It names no
+# language and no runtime, so it holds for a repository of any kind.
+#
+# It creates a tag and a release, and commits nothing. The branch ruleset
+# lets only a repository admin push to a protected branch, and the token
+# here is not one. A branch ruleset does not restrict a tag, so the
+# version lives in the tag rather than in a file.
+name: Release
+
+on:
+  workflow_call:
+    inputs:
+      bump:
+        description: "The part of the version to raise: major, minor or patch."
+        type: string
+        required: true
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    # Enough to create a tag and a release. Nothing here writes a branch.
+    permissions:
+      contents: write
+    steps:
+      - name: Cut the release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BUMP: ${{ inputs.bump }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+          BRANCH: ${{ github.ref_name }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          set -euo pipefail
+
+          case "$BUMP" in
+            major|minor|patch) ;;
+            *) echo "bump must be major, minor or patch. Got '$BUMP'." >&2
+               exit 1 ;;
+          esac
+
+          # The branch model releases from the default branch and from a
+          # released major line. Anywhere else is a mistake, not a release.
+          case "$BRANCH" in
+            "$DEFAULT_BRANCH"|*.x) ;;
+            *) echo "Release from $DEFAULT_BRANCH or an N.x branch. Got '$BRANCH'." >&2
+               exit 1 ;;
+          esac
+
+          # git/refs/tags answers 404 on a repository that has no tag yet,
+          # and grep exits 1 when no tag reads as a version. Both mean the
+          # same thing here: start from v0.0.0.
+          last=$(gh api "repos/$REPO/git/refs/tags" --jq '.[].ref' 2>/dev/null \
+            | sed 's|^refs/tags/||' \
+            | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' \
+            | sort -V \
+            | tail -1) || true
+          last=${last:-v0.0.0}
+
+          IFS=. read -r major minor patch <<<"${last#v}"
+          case "$BUMP" in
+            major) major=$((major + 1)); minor=0; patch=0 ;;
+            minor) minor=$((minor + 1)); patch=0 ;;
+            patch) patch=$((patch + 1)) ;;
+          esac
+          tag="v$major.$minor.$patch"
+
+          echo "$last -> $tag on $BRANCH"
+
+          # --generate-notes writes the notes from the titles of the pull
+          # requests merged since the last release, which is what
+          # CONTRIBUTING.md promises. It also creates the tag.
+          gh release create "$tag" \
+            --repo "$REPO" \
+            --target "$SHA" \
+            --title "$tag" \
+            --generate-notes

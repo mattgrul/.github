@@ -85,8 +85,8 @@ We look for these:
 
 ## Releases
 
-We release when a change is worth releasing. There is no schedule and no
-release day.
+Not every repository releases. Where one does, we release when a change
+is worth releasing. There is no schedule and no release day.
 
 A version follows semver, tagged `vMAJOR.MINOR.PATCH`. A workflow cuts
 the tag and writes the release notes from the pull request titles it
