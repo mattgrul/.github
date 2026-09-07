@@ -8,4 +8,4 @@ contact_links:
   # would otherwise file a vulnerability as a public issue.
   - name: Report a security vulnerability
     url: https://github.com/mattgrul/.github/security/policy
-    about: Never open a public issue. Use the repository's Security tab.
+    about: Never open a public issue. Use the Security tab.

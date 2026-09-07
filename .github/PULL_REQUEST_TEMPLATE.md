@@ -16,8 +16,8 @@ Closes #
 ### Checklist
 
 - [ ] One change, and nothing unrelated.
-- [ ] A test that fails without this change, where the repository has
+- [ ] A test that fails without this change, where this repository has
       tests.
-- [ ] No generated or compiled file, unless the repository tracks one.
+- [ ] No generated or compiled file, unless this repository tracks one.
 - [ ] "Allow edits by maintainers" is ticked.
 - [ ] I read and understand every line, including any a tool wrote.

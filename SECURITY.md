@@ -1,17 +1,17 @@
 # Security policy
 
-Report a vulnerability through GitHub's private reporting, on the repository
-it affects: open its **Security** tab and choose **Report a vulnerability**.
-That opens a private thread with the maintainer. Do not open a public issue
-for a vulnerability.
+Report a vulnerability through GitHub's private reporting: open the
+**Security** tab and choose **Report a vulnerability**. That opens a
+private thread with the maintainer. Do not open a public issue for a
+vulnerability.
 
-A private repository has no **Report a vulnerability** option. GitHub
-offers private reporting on public repositories only. Contact the
+If the tab has no **Report a vulnerability** option, this repository is
+private and GitHub offers no private reporting on it. Contact the
 maintainer directly.
 
 Tell us what you can:
 
-- The repository and the version or commit you tested.
+- The version or commit you tested.
 - What an attacker reaches, and what they need first.
 - The steps that reproduce it.
 

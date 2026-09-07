@@ -60,6 +60,11 @@ A future repository might be a library, a web application, a font, a
 dataset. A sentence that reads oddly on any of those does not belong here.
 That is the whole test.
 
+Write each file as if it lived in the repository that shows it. Say
+"this repository", never "the repository it affects", and never mention
+this repository or the account. A reader sees the file on one
+repository's page and should not learn from it that the file is shared.
+
 ## What holds these words true
 
 Three sentences here describe behaviour that another repository
