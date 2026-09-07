@@ -78,7 +78,6 @@ change there can make a sentence here false, and nothing warns you.
 - "A reason in the commit message" holds because the squashed commit
   keeps the branch's commit messages as its body. Take that body from
   the pull request instead and the line stops being true.
-
 - "Use the Discussions tab" holds because `personal-infra` turns
   Discussions on for every public repository. GitHub has no API for
   discussion categories, so the three are set by hand on each
