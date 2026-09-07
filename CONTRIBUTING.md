@@ -67,7 +67,7 @@ target branch, named after the pull request title, and that title is the
 line the release notes carry. Write it as the sentence you want a reader
 to find there.
 
-We look for these:
+The pull request template asks for these. Answer it in your own words.
 
 - **One change per pull request.** A fix and a rename in one branch take
   twice as long to read.
