@@ -36,9 +36,10 @@ Issue templates are all or nothing: a repository with any file in its own
 the whole set. There is no way to add one form and inherit the rest.
 
 A discussion form reaches a repository only where Discussions is on and
-a category carries the slug the file is named for. `q-a.yml` and
-`ideas.yml` name two of the categories GitHub creates with Discussions.
-`personal-infra` decides which repositories turn Discussions on.
+a category carries the slug the file is named for. Every public
+repository turns Discussions on and keeps three categories: Q&A, Ideas
+and Announcements. `q-a.yml` and `ideas.yml` are the forms for the two
+that a visitor can start. A private repository keeps Issues only.
 
 `LICENSE` cannot be inherited, by GitHub's design — *"License files must be
 added to individual repositories so the file will be included when a project
@@ -77,6 +78,11 @@ change there can make a sentence here false, and nothing warns you.
 - "A reason in the commit message" holds because the squashed commit
   keeps the branch's commit messages as its body. Take that body from
   the pull request instead and the line stops being true.
+
+- "Use the Discussions tab" holds because `personal-infra` turns
+  Discussions on for every public repository. GitHub has no API for
+  discussion categories, so the three are set by hand on each
+  repository, and nothing checks them.
 
 One thing no setting enforces: which branch a contributor starts from.
 The ruleset protects `main` and each `N.x` from a direct push and a
