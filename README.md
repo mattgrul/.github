@@ -26,12 +26,12 @@ repository for default files.
 | `LICENSE` | no |
 | `.github/workflows/` | no |
 
-A repository with its own copy of a file uses that one and ignores this one.
-That is the only way to opt out.
-
-A repository that needs its own guide does not have to repeat this one.
-Keep the local file short, link back to the copy here, and add only what
-is true in that repository.
+A repository with its own copy of a file uses that one and ignores this
+one. That is the only way to opt out, and it is all or nothing. A local
+copy must stand on its own and say everything the file here says.
+Do not write a short local file that links back here for the rest. A
+repository either shows the file here or carries a complete one of its
+own.
 
 Issue templates are all or nothing: a repository with any file in its own
 `.github/ISSUE_TEMPLATE/` ignores every template here, the forms and
