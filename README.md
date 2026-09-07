@@ -24,6 +24,7 @@ repository for default files.
 | `.github/PULL_REQUEST_TEMPLATE.md` | yes |
 | `README.md` | no |
 | `LICENSE` | no |
+| `.github/workflows/` | no |
 
 A repository with its own copy of a file uses that one and ignores this one.
 That is the only way to opt out.
@@ -41,6 +42,11 @@ the whole set. There is no way to add one form and inherit the rest.
 files says: *"License files must be added to individual repositories so
 the file will be included when a project is cloned, packaged, or
 downloaded."* Every repository needs its own.
+
+A workflow is not inherited either. A repository that wants one calls
+it from a workflow of its own, by path and commit SHA, and GitHub runs
+the body from here. [The one workflow here](#the-one-workflow-here)
+shows the caller.
 
 ## The rule for anything added here
 
@@ -105,9 +111,13 @@ here instead and forgoes the tick.
 
 ## The one workflow here
 
-Nothing inherits a workflow. `.github/workflows/release.yml` is called,
-not inherited. A repository that releases carries a caller that names
-this file by its path and a commit SHA, and the body lives here once.
+Nothing inherits a workflow, and nothing here is copied into another
+repository. `.github/workflows/release.yml` is a [reusable
+workflow][reuse]. A repository that releases carries a caller that
+names this file by its path and a commit SHA, and the body lives here
+once. GitHub reads the body from this repository on every run.
+
+[reuse]: https://docs.github.com/en/actions/how-tos/sharing-automations/reusing-workflows
 
 ```yaml
 # .github/workflows/release.yml, in a repository that releases
@@ -139,6 +149,17 @@ protected branch lets only a repository admin push to it, and the token
 in a workflow is not one. A branch ruleset does not restrict a tag, so
 the version lives in the tag. A repository that also carries a version
 in a file bumps it in the pull request, like any other change.
+
+The SHA pins the caller to one version of the body. A change here
+reaches a repository only when its caller moves to the new SHA, so
+editing this file breaks no release until a caller opts in. GitHub also
+accepts a tag or a branch name after the `@`, and its page on reusable
+workflows calls the SHA the safest of the three.
+
+GitHub does offer a way to copy a workflow: a starter workflow in a
+`workflow-templates/` directory, which the Actions tab suggests and a
+repository copies once. This repository holds none. A copy drifts from
+its source, and a call does not.
 
 There is no `.github/dependabot.yml`. Nothing inherits one, and the
 release workflow pins no action to keep current.
