@@ -17,10 +17,10 @@ repository for default files.
 | `SECURITY.md` | yes |
 | `CONTRIBUTING.md` | yes |
 | `CODE_OF_CONDUCT.md` | yes |
-| `.github/ISSUE_TEMPLATE/` | yes, see below |
+| `.github/ISSUE_TEMPLATE/` | yes |
 | `.github/PULL_REQUEST_TEMPLATE.md` | yes |
-| `README.md` | no — this page only |
-| `LICENSE` | **never** |
+| `README.md` | no |
+| `LICENSE` | no |
 
 A repository with its own copy of a file uses that one and ignores this one.
 That is the only way to opt out.
