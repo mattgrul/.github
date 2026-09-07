@@ -19,7 +19,6 @@ repository for default files.
 | `CODE_OF_CONDUCT.md` | yes |
 | `.github/ISSUE_TEMPLATE/` | yes, see below |
 | `.github/PULL_REQUEST_TEMPLATE.md` | yes |
-| `.github/DISCUSSION_TEMPLATE/` | yes, per category |
 | `README.md` | no — this page only |
 | `LICENSE` | **never** |
 
@@ -34,12 +33,6 @@ Issue templates are all or nothing: a repository with any file in its own
 `.github/ISSUE_TEMPLATE/` ignores every template here, the forms and
 `config.yml` alike. A repository that wants one local form must carry
 the whole set. There is no way to add one form and inherit the rest.
-
-A discussion form reaches a repository only where Discussions is on and
-a category carries the slug the file is named for. Every public
-repository turns Discussions on and keeps three categories: Q&A, Ideas
-and Announcements. `q-a.yml` and `ideas.yml` are the forms for the two
-that a visitor can start. A private repository keeps Issues only.
 
 `LICENSE` cannot be inherited, by GitHub's design — *"License files must be
 added to individual repositories so the file will be included when a project
@@ -84,9 +77,8 @@ change there can make a sentence here false, and nothing warns you.
   keeps the branch's commit messages as its body. Take that body from
   the pull request instead and the line stops being true.
 - "Use the Discussions tab" holds because `personal-infra` turns
-  Discussions on for every public repository. GitHub has no API for
-  discussion categories, so the three are set by hand on each
-  repository, and nothing checks them.
+  Discussions on for every public repository unless its entry says
+  otherwise. A private repository keeps Issues only.
 
 One thing no setting enforces: which branch a contributor starts from.
 The ruleset protects `main` and each `N.x` from a direct push and a
@@ -97,9 +89,9 @@ is why "Which branch?" asks for judgement instead of promising a check.
 
 `FUNDING.yml` would advertise sponsorship, but this account accepts none.
 `SUPPORT.md` is a second door saying what `CONTRIBUTING.md` already says.
-Every other discussion category has no form here, because a form for it
-would describe what a repository discusses, which is what nothing here
-may do. GitHub supports no form for Polls at all.
+There is no `.github/DISCUSSION_TEMPLATE/`. Every repository keeps the
+six categories GitHub creates with Discussions, and a form for one would
+describe what a repository discusses, which is what nothing here may do.
 
 The tick beside "Code of conduct" on GitHub's community profile is also
 absent, and stays absent. GitHub awards it only for a stock template,
