@@ -1,7 +1,7 @@
-# Blank issues stay enabled. Forcing every thought through a form is right
-# for a busy project and wrong for a small one -- most of what arrives here
-# is not a bug report and should not have to pretend to be.
-blank_issues_enabled: true
+# Every issue starts from a form. The tracker holds defects and agreed
+# work, and the two forms are the shape of those. A question goes to
+# Discussions, which CONTRIBUTING.md says.
+blank_issues_enabled: false
 
 contact_links:
   # This is the point of the file. It catches someone at the moment they

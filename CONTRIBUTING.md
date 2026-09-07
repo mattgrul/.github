@@ -20,7 +20,7 @@ you: where the source is public, fork it and send a pull request.
 
 Do not open an issue to ask how something works. Use the Discussions tab
 on the repository it concerns. If the repository has no Discussions tab,
-open an issue instead.
+open a **Bug report** and say in it that this is a question.
 
 An issue tracker records defects and agreed work. A question posted
 there sinks under them and gets no better answer for the wait.
