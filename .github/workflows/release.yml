@@ -1,10 +1,10 @@
 # A release workflow that a repository calls by name. It names no
 # language and no runtime, so it holds for a repository of any kind.
 #
-# It creates a tag and a release, and commits nothing. The branch ruleset
-# lets only a repository admin push to a protected branch, and the token
-# here is not one. A branch ruleset does not restrict a tag, so the
-# version lives in the tag rather than in a file.
+# It drafts a release and commits nothing. The branch ruleset lets only
+# a repository admin push to a protected branch, and the token here is
+# not one. A branch ruleset does not restrict a tag, so the version
+# lives in the tag, which GitHub creates when the draft is published.
 name: Release
 
 on:
@@ -68,11 +68,15 @@ jobs:
 
           echo "$last -> $tag on $BRANCH"
 
-          # --generate-notes writes the notes from the titles of the pull
-          # requests merged since the last release, which is what
-          # CONTRIBUTING.md promises. It also creates the tag.
+          # --generate-notes writes the notes from the pull request titles
+          # merged since the last release, as CONTRIBUTING.md promises.
+          # --draft holds the release for review, and GitHub creates the tag
+          # when the draft is published. A draft has no tag, so the lookup
+          # above does not see it, and a second run before the draft is
+          # published drafts the same version again.
           gh release create "$tag" \
             --repo "$REPO" \
             --target "$SHA" \
             --title "$tag" \
+            --draft \
             --generate-notes

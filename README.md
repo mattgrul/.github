@@ -69,11 +69,12 @@ jobs:
 ```
 
 Run it from the Actions tab and choose the part of the version to raise.
-It reads the highest `vX.Y.Z` tag, raises that part, creates the tag and
-a release, and asks GitHub to write the notes from the pull request
-titles merged since. It runs from the default branch or an `N.x` branch
-and refuses any other. It commits nothing. A repository that also keeps
-a version in a file bumps that file in a pull request, like any other
+It reads the highest `vX.Y.Z` tag, raises that part, and drafts a
+release with notes GitHub writes from the pull request titles merged
+since. Review the draft on the Releases page and publish it. Publishing
+creates the tag. It runs from the default branch or an `N.x` branch and
+refuses any other. It commits nothing. A repository that also keeps a
+version in a file bumps that file in a pull request, like any other
 change.
 
 The SHA pins the caller to one version of the body. A change here

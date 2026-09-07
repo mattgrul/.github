@@ -76,10 +76,11 @@ stops being true.
 language and no runtime. Keep it that way.
 
 A caller pins it by commit SHA, so an edit here reaches no repository
-until that caller moves its SHA. The workflow creates a tag and a
-release and commits nothing, because the ruleset on a protected branch
-lets only an admin push and the workflow token is not one. A tag is
-outside the branch ruleset, so the version lives in the tag.
+until that caller moves its SHA. The workflow drafts a release and
+commits nothing, because the ruleset on a protected branch lets only an
+admin push and the workflow token is not one. A tag is outside the
+branch ruleset, so the version lives in the tag, and publishing the
+draft creates it.
 
 ## Conventions
 
