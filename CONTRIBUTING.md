@@ -2,13 +2,12 @@
 
 Thank you for looking.
 
-This file serves every repository this account owns, so it says nothing
-about any one of them. What a repository is, and how to check your work
-in it, belongs in its README.
+This file says how to contribute. The README says what this repository
+is and how to check your work in it.
 
 ## Bug reports
 
-Open the **Bug report** form on the repository it affects. The form asks
+Open the **Bug report** form on the Issues tab. The form asks
 what happened, what you expected instead, and how to reproduce it. Answer
 all three.
 
@@ -18,15 +17,14 @@ you: where the source is public, fork it and send a pull request.
 
 ## Support questions
 
-Do not open an issue to ask how something works. Use the Discussions tab
-on the repository it concerns.
+Do not open an issue to ask how something works. Use the Discussions tab.
 
 An issue tracker records defects and agreed work. A question posted
 there sinks under them and gets no better answer for the wait.
 
 ## Proposing a change
 
-Open the **Feature request** form on the repository it affects. Say what
+Open the **Feature request** form on the Issues tab. Say what
 problem it solves, not only what it adds. Wait for an answer before you
 write the feature. This saves you from writing something we then decline.
 
@@ -44,10 +42,10 @@ request.
 Branch from `main`, and open your pull request against it. For almost
 every change that is the whole answer.
 
-A repository may also carry a branch named `N.x` — `1.x`, `2.x` — one for
-each released major version. A repository grows one only when it has to
-patch an older major after a newer one starts, so most repositories here
-have none. Where one exists, send a bug fix for that major to its branch.
+This repository may also carry a branch named `N.x` — `1.x`, `2.x` — one
+for each released major version. One appears only when an older major
+needs a patch after a newer one starts, so there is usually none. Where
+one exists, send a bug fix for that major to its branch.
 Send a feature, and anything that breaks compatibility, to `main`.
 
 If you cannot tell which branch your change belongs on, open the pull
@@ -56,10 +54,9 @@ lose it.
 
 ## Pull requests
 
-Run the repository's checks first, where it has them. Its README says
-how, and the commands differ from one repository to the next. Where
-continuous integration runs, it runs those same checks, so a green run
-on your computer is a good sign rather than the whole answer.
+Run the checks first, where this repository has them. The README says
+how. Where continuous integration runs, it runs those same checks, so a
+green run on your computer is a good sign rather than the whole answer.
 
 Every pull request lands squashed. Your commits become one commit on the
 target branch, named after the pull request title, and that title is the
@@ -70,22 +67,22 @@ The pull request template asks for these. Answer it in your own words.
 
 - **One change per pull request.** A fix and a rename in one branch take
   twice as long to read.
-- **A test that fails without your change.** This applies where the
+- **A test that fails without your change.** This applies where this
   repository has tests. Write that test before you fix a bug.
 - **A reason in the commit message.** The diff says what changed. The
   message says why.
 - **Source, not output.** Do not commit a generated or compiled file,
-  unless the repository says it tracks one. Nobody can review a
+  unless this repository says it tracks one. Nobody can review a
   generated file, and one can carry what is not in the source.
 - **Allow edits by maintainers.** Leave the box ticked. It lets us
   rebase your branch or fix a typo without asking you to push again.
-- **The receiving repository's license.** Your contribution uses the terms
-  in that repository's `LICENSE`.
+- **This repository's license.** Your contribution uses the terms in
+  its `LICENSE`.
 
 ## Releases
 
-Not every repository releases. Where one does, we release when a change
-is worth releasing. There is no schedule and no release day.
+Where this repository releases, it releases when a change is worth
+releasing. There is no schedule and no release day.
 
 A version follows semver, tagged `vMAJOR.MINOR.PATCH`. A workflow cuts
 the tag and writes the release notes from the pull request titles it
@@ -94,8 +91,8 @@ contains. Nobody tags by hand.
 ## Security vulnerabilities
 
 Never open a public issue for a vulnerability. Report it through the
-repository's **Security** tab, which opens a private thread with the
-maintainer. `SECURITY.md` says what to include and how fast we answer.
+**Security** tab, which opens a private thread with the maintainer.
+`SECURITY.md` says what to include and how fast we answer.
 
 ## Coding style
 
@@ -103,8 +100,8 @@ Match the file you are editing. Follow its wrapping, its names, and the
 shape of its comments. Consistency inside one file beats any rule from
 outside it.
 
-Where a repository documents a style or carries a formatter, that wins.
-Its README says so.
+Where this repository documents a style or carries a formatter, that
+wins. The README says so.
 
 ## AI-assisted contributions
 
