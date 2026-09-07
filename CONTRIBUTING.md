@@ -2,8 +2,8 @@
 
 Thank you for looking.
 
-This file says how to contribute. The README says what this repository
-is and how to check your work in it.
+This file says how to contribute. What this repository is, and how to
+check your work in it, is in the repository's own documentation.
 
 ## Bug reports
 
@@ -54,9 +54,10 @@ lose it.
 
 ## Pull requests
 
-Run the checks first, where this repository has them. The README says
-how. Where continuous integration runs, it runs those same checks, so a
-green run on your computer is a good sign rather than the whole answer.
+Run the checks first, where this repository has them. Its own
+documentation says how. Where continuous integration runs, it runs
+those same checks, so a green run on your computer is a good sign
+rather than the whole answer.
 
 Every pull request lands squashed. Your commits become one commit on the
 target branch, named after the pull request title, and that title is the
@@ -84,15 +85,15 @@ The pull request template asks for these. Answer it in your own words.
 Where this repository releases, it releases when a change is worth
 releasing. There is no schedule and no release day.
 
-A version follows semver, tagged `vMAJOR.MINOR.PATCH`. A workflow cuts
-the tag and writes the release notes from the pull request titles it
-contains. Nobody tags by hand.
+A version follows semver, tagged `vMAJOR.MINOR.PATCH`. A workflow drafts
+the release with notes from the pull request titles it contains.
+Publishing the draft cuts the tag. Nobody tags by hand.
 
 ## Security vulnerabilities
 
 Never open a public issue for a vulnerability. Report it through the
 **Security** tab, which opens a private thread with the maintainer.
-`SECURITY.md` says what to include and how fast we answer.
+`SECURITY.md` says what to include and what happens next.
 
 ## Coding style
 
@@ -101,7 +102,7 @@ shape of its comments. Consistency inside one file beats any rule from
 outside it.
 
 Where this repository documents a style or carries a formatter, that
-wins. The README says so.
+wins.
 
 ## AI-assisted contributions
 
