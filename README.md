@@ -1,6 +1,9 @@
 # .github
 
-Community health files for every repository this account owns.
+[Default community health files][docs] for every repository this
+account owns.
+
+[docs]: https://docs.github.com/en/communities/setting-up-your-project-for-healthy-contributions/creating-a-default-community-health-file
 
 **Editing a file here changes every repository this account owns, public
 and private, that has no copy of its own.** GitHub reads these files and
@@ -34,9 +37,10 @@ Issue templates are all or nothing: a repository with any file in its own
 `config.yml` alike. A repository that wants one local form must carry
 the whole set. There is no way to add one form and inherit the rest.
 
-`LICENSE` cannot be inherited, by GitHub's design — *"License files must be
-added to individual repositories so the file will be included when a project
-is cloned, packaged, or downloaded."* Every repository needs its own.
+`LICENSE` cannot be inherited, by GitHub's design. Its page on default
+files says: *"License files must be added to individual repositories so
+the file will be included when a project is cloned, packaged, or
+downloaded."* Every repository needs its own.
 
 ## The rule for anything added here
 
