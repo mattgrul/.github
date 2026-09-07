@@ -17,7 +17,9 @@ repository for default files.
 | `SECURITY.md` | yes |
 | `CONTRIBUTING.md` | yes |
 | `CODE_OF_CONDUCT.md` | yes |
-| `.github/ISSUE_TEMPLATE/` | yes, all or nothing |
+| `.github/ISSUE_TEMPLATE/` | yes, see below |
+| `.github/PULL_REQUEST_TEMPLATE.md` | yes |
+| `.github/DISCUSSION_TEMPLATE/` | yes, per category |
 | `README.md` | no — this page only |
 | `LICENSE` | **never** |
 
@@ -29,7 +31,15 @@ Keep the local file short, link back to the copy here, and add only what
 is true in that repository.
 
 Issue templates are all or nothing: a repository with any file in its own
-`.github/ISSUE_TEMPLATE/` ignores every template here.
+`.github/ISSUE_TEMPLATE/` ignores every template here, the forms and
+`config.yml` alike. A repository that wants one local form must carry
+the whole set. There is no way to add one form and inherit the rest.
+
+A discussion form reaches a repository only where Discussions is on and
+a category carries the slug the file is named for. Every public
+repository turns Discussions on and keeps three categories: Q&A, Ideas
+and Announcements. `q-a.yml` and `ideas.yml` are the forms for the two
+that a visitor can start. A private repository keeps Issues only.
 
 `LICENSE` cannot be inherited, by GitHub's design — *"License files must be
 added to individual repositories so the file will be included when a project
@@ -59,13 +69,19 @@ change there can make a sentence here false, and nothing warns you.
 - The issue forms set `labels:` on a new issue. `personal-infra` gives
   every repository the same labels, which is the only reason a form here
   can name `bug`, `enhancement` and `needs-triage`. Rename one there and
-  GitHub drops it from the form without a word.
+  GitHub drops it from the form without a word. GitHub also requires
+  each label to exist in this repository, so this repository must keep
+  the same set.
 - "Every pull request lands squashed ... named after the pull request
   title" is a merge setting: squash only, title taken from the pull
   request.
 - "A reason in the commit message" holds because the squashed commit
   keeps the branch's commit messages as its body. Take that body from
   the pull request instead and the line stops being true.
+- "Use the Discussions tab" holds because `personal-infra` turns
+  Discussions on for every public repository. GitHub has no API for
+  discussion categories, so the three are set by hand on each
+  repository, and nothing checks them.
 
 One thing no setting enforces: which branch a contributor starts from.
 The ruleset protects `main` and each `N.x` from a direct push and a
@@ -75,10 +91,10 @@ is why "Which branch?" asks for judgement instead of promising a check.
 ## What is deliberately absent
 
 `FUNDING.yml` would advertise sponsorship, but this account accepts none.
-`SUPPORT.md` is a second door saying what `CONTRIBUTING.md` already says. A
-pull request template, with one maintainer, would only nag its author.
-Discussion category forms describe what a repository discusses, which is
-what nothing here may do.
+`SUPPORT.md` is a second door saying what `CONTRIBUTING.md` already says.
+Every other discussion category has no form here, because a form for it
+would describe what a repository discusses, which is what nothing here
+may do. GitHub supports no form for Polls at all.
 
 The tick beside "Code of conduct" on GitHub's community profile is also
 absent, and stays absent. GitHub awards it only for a stock template,

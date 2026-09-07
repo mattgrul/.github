@@ -5,8 +5,8 @@
 name: Feature request
 description: A new feature or an improvement
 # A category role and a state role, which is what a triaged issue carries.
-# Both labels must exist in every repository this template reaches, or
-# GitHub drops the missing one without a warning.
+# Both labels must exist in this repository and in every repository this
+# template reaches, or GitHub drops the missing one without a warning.
 labels: [enhancement, needs-triage]
 
 body:

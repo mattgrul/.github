@@ -19,8 +19,7 @@ you: where the source is public, fork it and send a pull request.
 ## Support questions
 
 Do not open an issue to ask how something works. Use the Discussions tab
-on the repository it concerns. If the repository has no Discussions tab,
-open an issue instead.
+on the repository it concerns.
 
 An issue tracker records defects and agreed work. A question posted
 there sinks under them and gets no better answer for the wait.
@@ -67,7 +66,7 @@ target branch, named after the pull request title, and that title is the
 line the release notes carry. Write it as the sentence you want a reader
 to find there.
 
-We look for these:
+The pull request template asks for these. Answer it in your own words.
 
 - **One change per pull request.** A fix and a rename in one branch take
   twice as long to read.
