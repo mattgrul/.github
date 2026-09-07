@@ -86,3 +86,20 @@ outside the branch ruleset, so the version lives in the tag.
 - Wrap prose at 76 columns and code at 80.
 - Open a pull request against `main`. The branch rules in
   `CONTRIBUTING.md` apply here.
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in this repository's GitHub Issues, through the `gh` CLI.
+See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+The five default triage labels, each named for its role. See
+`docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: one `CONTEXT.md` and `docs/adr/` at the root, created
+lazily. See `docs/agents/domain.md`.
