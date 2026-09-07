@@ -1,19 +1,17 @@
 # .github
 
-[Default community health files][docs] for every repository this
-account owns.
+[Default community health files][docs] for the repositories of
+`mattgrul`. A file here shows on every repository of the account, public
+and private, that has no copy of its own. GitHub reads the file from
+here and shows it in place. Nothing is copied, so a clone of another
+repository contains none of this.
 
 [docs]: https://docs.github.com/en/communities/setting-up-your-project-for-healthy-contributions/creating-a-default-community-health-file
 
-**Editing a file here changes every repository this account owns, public
-and private, that has no copy of its own.** GitHub reads these files and
-shows them in place. Nothing is copied — a clone of another repository
-still contains none of this.
+This repository must stay public. GitHub reads default files from a
+public `.github` repository only.
 
-This repository must stay public. GitHub does not support a private
-repository for default files.
-
-## What inherits, and what does not
+## What inherits
 
 | File | Inherited |
 |---|---|
@@ -27,95 +25,26 @@ repository for default files.
 | `.github/workflows/` | no |
 
 A repository with its own copy of a file uses that one and ignores this
-one. That is the only way to opt out, and it is all or nothing. A local
-copy must stand on its own and say everything the file here says.
-Do not write a short local file that links back here for the rest. A
-repository either shows the file here or carries a complete one of its
-own.
+one. That is the only way to opt out. A local copy stands on its own and
+says everything the file here says. A repository either shows the file
+here or carries a complete one of its own.
 
-Issue templates are all or nothing: a repository with any file in its own
-`.github/ISSUE_TEMPLATE/` ignores every template here, the forms and
-`config.yml` alike. A repository that wants one local form must carry
-the whole set. There is no way to add one form and inherit the rest.
+Issue templates are one set. A repository with a valid form or a
+`config.yml` in its own `.github/ISSUE_TEMPLATE/` ignores every
+template here, the forms and `config.yml` alike. A repository that
+wants one local form carries the whole set.
 
-`LICENSE` cannot be inherited, by GitHub's design. Its page on default
-files says: *"License files must be added to individual repositories so
-the file will be included when a project is cloned, packaged, or
-downloaded."* Every repository needs its own.
+`LICENSE` is never inherited. GitHub's page on default files says:
+*"License files must be added to individual repositories so the file
+will be included when a project is cloned, packaged, or downloaded."*
+Every repository needs its own.
 
-A workflow is not inherited either. A repository that wants one calls
-it from a workflow of its own, by path and commit SHA, and GitHub runs
-the body from here. [The one workflow here](#the-one-workflow-here)
-shows the caller.
+## The release workflow
 
-## The rule for anything added here
-
-> The files that inherit apply to every repository this account owns —
-> including ones that do not exist yet. So nothing here may describe what
-> those repositories **are**. State only what is true of any repository: how
-> to report something, what a good bug report contains, what a pull request
-> should look like.
->
-> Anything true of a language, a runtime or a subject belongs in the
-> repository it is true of.
-
-A future repository might be a library, a web application, a font, a
-dataset. A sentence that reads oddly on any of those does not belong here.
-That is the whole test.
-
-Write each file as if it lived in the repository that shows it. Say
-"this repository", never "the repository it affects", and never mention
-this repository or the account. A reader sees the file on one
-repository's page and should not learn from it that the file is shared.
-
-## What holds these words true
-
-Three sentences here describe behaviour that another repository
-configures. `mattgrul/personal-infra` holds those settings as code, so a
-change there can make a sentence here false, and nothing warns you.
-
-- The issue forms set `labels:` on a new issue. `personal-infra` gives
-  every repository the same labels, which is the only reason a form here
-  can name `bug`, `enhancement` and `needs-triage`. Rename one there and
-  GitHub drops it from the form without a word. GitHub also requires
-  each label to exist in this repository, so this repository must keep
-  the same set.
-- "Every pull request lands squashed ... named after the pull request
-  title" is a merge setting: squash only, title taken from the pull
-  request.
-- "A reason in the commit message" holds because the squashed commit
-  keeps the branch's commit messages as its body. Take that body from
-  the pull request instead and the line stops being true.
-- "Use the Discussions tab" holds because `personal-infra` turns
-  Discussions on for every public repository unless its entry says
-  otherwise. A private repository keeps Issues only.
-
-One thing no setting enforces: which branch a contributor starts from.
-The ruleset protects `main` and each `N.x` from a direct push and a
-force push. It does not choose the branch a pull request targets, which
-is why "Which branch?" asks for judgement instead of promising a check.
-
-## What is deliberately absent
-
-`FUNDING.yml` would advertise sponsorship, but this account accepts none.
-`SUPPORT.md` is a second door saying what `CONTRIBUTING.md` already says.
-There is no `.github/DISCUSSION_TEMPLATE/`. Every repository keeps the
-six categories GitHub creates with Discussions, and a form for one would
-describe what a repository discusses, which is what nothing here may do.
-
-The tick beside "Code of conduct" on GitHub's community profile is also
-absent, and stays absent. GitHub awards it only for a stock template,
-and every stock template names a contact and promises a reporting
-process. This account runs neither, so `CODE_OF_CONDUCT.md` is written
-here instead and forgoes the tick.
-
-## The one workflow here
-
-Nothing inherits a workflow, and nothing here is copied into another
-repository. `.github/workflows/release.yml` is a [reusable
-workflow][reuse]. A repository that releases carries a caller that
-names this file by its path and a commit SHA, and the body lives here
-once. GitHub reads the body from this repository on every run.
+`.github/workflows/release.yml` is a [reusable workflow][reuse]. A
+repository that releases calls it from a workflow of its own, by path
+and commit SHA. GitHub reads the body from here on every run. Nothing is
+copied.
 
 [reuse]: https://docs.github.com/en/actions/how-tos/sharing-automations/reusing-workflows
 
@@ -131,35 +60,23 @@ on:
 jobs:
   release:
     uses: mattgrul/.github/.github/workflows/release.yml@COMMIT_SHA
-    # A called workflow cannot hold more than its caller grants, and
-    # every repository here defaults its token to read.
+    # A called workflow holds no more than its caller grants, and the
+    # default token is read only.
     permissions:
       contents: write
     with:
       bump: ${{ inputs.bump }}
 ```
 
-It is allowed here because it names no language and no runtime. It reads
-the newest tag, raises the part you choose, and asks GitHub to write the
-notes from the pull request titles merged since. A test workflow cannot
-pass that test — it must name a runtime — so this repository holds none.
-
-It creates a tag and a release, and commits nothing. The ruleset on a
-protected branch lets only a repository admin push to it, and the token
-in a workflow is not one. A branch ruleset does not restrict a tag, so
-the version lives in the tag. A repository that also carries a version
-in a file bumps it in the pull request, like any other change.
+Run it from the Actions tab and choose the part of the version to raise.
+It reads the highest `vX.Y.Z` tag, raises that part, creates the tag and
+a release, and asks GitHub to write the notes from the pull request
+titles merged since. It runs from the default branch or an `N.x` branch
+and refuses any other. It commits nothing. A repository that also keeps
+a version in a file bumps that file in a pull request, like any other
+change.
 
 The SHA pins the caller to one version of the body. A change here
-reaches a repository only when its caller moves to the new SHA, so
-editing this file breaks no release until a caller opts in. GitHub also
-accepts a tag or a branch name after the `@`, and its page on reusable
-workflows calls the SHA the safest of the three.
-
-GitHub does offer a way to copy a workflow: a starter workflow in a
-`workflow-templates/` directory, which the Actions tab suggests and a
-repository copies once. This repository holds none. A copy drifts from
-its source, and a call does not.
-
-There is no `.github/dependabot.yml`. Nothing inherits one, and the
-release workflow pins no action to keep current.
+reaches a repository only when its caller moves to the new SHA. GitHub
+also accepts a tag or a branch name after the `@`, and calls the SHA the
+safest of the three.
