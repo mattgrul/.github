@@ -61,7 +61,8 @@ stops being true.
   GitHub creates, and a form would describe what one repository
   discusses.
 - `.github/dependabot.yml`: nothing inherits it, and the release
-  workflow pins no action.
+  workflow pins no action. A calling repository keeps its own, watching
+  `github-actions`, and that is what moves the pinned SHA.
 - `workflow-templates/`: a starter workflow is copied once and drifts
   from here. A repository calls a workflow here instead.
 - A test workflow: it must name a runtime.

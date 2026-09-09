@@ -78,6 +78,8 @@ version in a file bumps that file in a pull request, like any other
 change.
 
 The SHA pins the caller to one version of the body. A change here
-reaches a repository only when its caller moves to the new SHA. GitHub
-also accepts a tag or a branch name after the `@`, and calls the SHA the
-safest of the three.
+reaches a repository only when its caller moves to the new SHA. A
+`dependabot.yml` in the calling repository that watches the
+`github-actions` ecosystem opens that pull request. GitHub also accepts
+a tag or a branch name after the `@`, and calls the SHA the safest of
+the three.
