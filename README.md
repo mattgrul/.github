@@ -77,6 +77,42 @@ refuses any other. It commits nothing. A repository that also keeps a
 version in a file bumps that file in a pull request, like any other
 change.
 
+### Attaching assets to the draft
+
+The workflow names no language, so it builds nothing and attaches
+nothing. A repository that ships a binary adds one job of its own,
+after the caller, that builds its artifacts and uploads them to the
+draft. It reads the draft's tag from the caller:
+
+```yaml
+jobs:
+  release:
+    uses: mattgrul/.github/.github/workflows/release.yml@COMMIT_SHA
+    permissions:
+      contents: write
+    with:
+      bump: ${{ inputs.bump }}
+
+  artifacts:
+    needs: release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      # Build, then:
+      - run: gh release upload "$TAG" <files> --repo "$REPO" --clobber
+        env:
+          TAG: ${{ needs.release.outputs.tag }}
+          REPO: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
+```
+
+That job is the one addition a caller may carry. It must not compute a
+version, create a release or write notes, because those live here and
+move by the SHA. Uploading to a draft is safe: the release stays
+unpublished until a person publishes it, and publishing is what
+creates the tag.
+
 The SHA pins the caller to one version of the body. A change here
 reaches a repository only when its caller moves to the new SHA. A
 `dependabot.yml` in the calling repository that watches the

@@ -76,6 +76,12 @@ stops being true.
 `.github/workflows/release.yml` is allowed here because it names no
 language and no runtime. Keep it that way.
 
+Naming no language is also why it attaches no artifact. A repository
+that ships a binary carries one job of its own for that, reading the
+draft's tag from this workflow's `tag` output. README shows the shape
+and states its bound: that job computes no version, creates no release
+and writes no notes.
+
 A caller pins it by commit SHA, so an edit here reaches no repository
 until that caller moves its SHA. The workflow drafts a release and
 commits nothing, because the ruleset on a protected branch lets only an

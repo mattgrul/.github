@@ -14,6 +14,10 @@ on:
         description: "The part of the version to raise: major, minor or patch."
         type: string
         required: true
+    outputs:
+      tag:
+        description: "The tag of the drafted release, such as v1.2.3."
+        value: ${{ jobs.release.outputs.tag }}
 
 jobs:
   release:
@@ -21,8 +25,14 @@ jobs:
     # Enough to create a tag and a release. Nothing here writes a branch.
     permissions:
       contents: write
+    # A caller that attaches its own assets needs the draft's tag. Without
+    # it the caller has to find the draft by matching a commit, which picks
+    # arbitrarily when two drafts target one commit.
+    outputs:
+      tag: ${{ steps.cut.outputs.tag }}
     steps:
       - name: Cut the release
+        id: cut
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -80,3 +90,5 @@ jobs:
             --title "$tag" \
             --draft \
             --generate-notes
+
+          echo "tag=$tag" >>"$GITHUB_OUTPUT"
