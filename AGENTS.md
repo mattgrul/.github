@@ -85,8 +85,11 @@ and writes no notes.
 The workflow takes a bump or an exact version. A job that reads the
 caller's version from a file is the second allowed addition.
 
-A caller pins it by commit SHA, so an edit here reaches no repository
-until that caller moves its SHA. The workflow drafts a release and
+A caller pins it by commit SHA, with the tag in a comment, so an edit
+here reaches no repository until it is released and that caller moves
+its SHA. Release the workflow from this repository's Actions tab, as
+README says. Without a tag, Dependabot sees no new version and moves no
+pin. The workflow drafts a release and
 commits nothing, because the ruleset on a protected branch lets only an
 admin push and the workflow token is not one. A tag is outside the
 branch ruleset, so the version lives in the tag, and publishing the
