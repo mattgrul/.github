@@ -11,9 +11,17 @@ on:
   workflow_call:
     inputs:
       bump:
-        description: "The part of the version to raise: major, minor or patch."
+        description: >-
+          The part of the version to raise: major, minor or patch.
+          Give this or version, not both.
         type: string
-        required: true
+        required: false
+      version:
+        description: >-
+          The version to release, such as 1.2.3, without the v.
+          Give this or bump, not both.
+        type: string
+        required: false
     outputs:
       tag:
         description: "The tag of the drafted release, such as v1.2.3."
@@ -37,6 +45,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           BUMP: ${{ inputs.bump }}
+          VERSION: ${{ inputs.version }}
           REPO: ${{ github.repository }}
           SHA: ${{ github.sha }}
           BRANCH: ${{ github.ref_name }}
@@ -44,17 +53,26 @@ jobs:
         run: |
           set -euo pipefail
 
-          case "$BUMP" in
-            major|minor|patch) ;;
-            *) echo "bump must be major, minor or patch. Got '$BUMP'." >&2
-               exit 1 ;;
-          esac
+          if [[ -n "$BUMP" && -n "$VERSION" ]] ||
+             [[ -z "$BUMP" && -z "$VERSION" ]]; then
+            echo "Give either bump or version, not both or neither." >&2
+            exit 1
+          fi
+
+          if [[ -n "$BUMP" ]]; then
+            case "$BUMP" in
+              major|minor|patch) ;;
+              *) echo "bump must be major, minor or patch. Got '$BUMP'." >&2
+                 exit 1 ;;
+            esac
+          fi
 
           # The branch model releases from the default branch and from a
           # released major line. Anywhere else is a mistake, not a release.
           case "$BRANCH" in
             "$DEFAULT_BRANCH"|*.x) ;;
-            *) echo "Release from $DEFAULT_BRANCH or an N.x branch. Got '$BRANCH'." >&2
+            *) echo "Release from $DEFAULT_BRANCH or an N.x branch." \
+                 "Got '$BRANCH'." >&2
                exit 1 ;;
           esac
 
@@ -68,13 +86,26 @@ jobs:
             | tail -1) || true
           last=${last:-v0.0.0}
 
-          IFS=. read -r major minor patch <<<"${last#v}"
-          case "$BUMP" in
-            major) major=$((major + 1)); minor=0; patch=0 ;;
-            minor) minor=$((minor + 1)); patch=0 ;;
-            patch) patch=$((patch + 1)) ;;
-          esac
-          tag="v$major.$minor.$patch"
+          if [[ -n "$VERSION" ]]; then
+            if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              echo "version must be X.Y.Z without the v. Got '$VERSION'." >&2
+              exit 1
+            fi
+            tag="v$VERSION"
+            # A published version cannot be released again or rewound.
+            if ! printf '%s\n' "$last" "$tag" | sort -V -C -u; then
+              echo "$tag must be strictly above $last." >&2
+              exit 1
+            fi
+          else
+            IFS=. read -r major minor patch <<<"${last#v}"
+            case "$BUMP" in
+              major) major=$((major + 1)); minor=0; patch=0 ;;
+              minor) minor=$((minor + 1)); patch=0 ;;
+              patch) patch=$((patch + 1)) ;;
+            esac
+            tag="v$major.$minor.$patch"
+          fi
 
           echo "$last -> $tag on $BRANCH"
 

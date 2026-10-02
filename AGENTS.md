@@ -82,6 +82,9 @@ draft's tag from this workflow's `tag` output. README shows the shape
 and states its bound: that job computes no version, creates no release
 and writes no notes.
 
+The workflow takes a bump or an exact version. A job that reads the
+caller's version from a file is the second allowed addition.
+
 A caller pins it by commit SHA, so an edit here reaches no repository
 until that caller moves its SHA. The workflow drafts a release and
 commits nothing, because the ruleset on a protected branch lets only an
