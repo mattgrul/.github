@@ -77,6 +77,49 @@ refuses any other. It commits nothing. A repository that also keeps a
 version in a file bumps that file in a pull request, like any other
 change.
 
+### Releasing the version a file holds
+
+A repository that keeps its version in a file passes that version
+instead of a bump, so the tag always matches the file. Read the file
+at the commit being released through the GitHub API:
+
+```yaml
+name: Release
+on:
+  workflow_dispatch:
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      version: ${{ steps.read.outputs.version }}
+    steps:
+      - id: read
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          version=$(gh api "repos/$REPO/contents/VERSION_FILE?ref=$SHA" \
+            -H 'Accept: application/vnd.github.raw+json' | READ_VERSION)
+          echo "version=$version" >>"$GITHUB_OUTPUT"
+
+  release:
+    needs: version
+    uses: mattgrul/.github/.github/workflows/release.yml@COMMIT_SHA
+    permissions:
+      contents: write
+    with:
+      version: ${{ needs.version.outputs.version }}
+```
+
+Replace `VERSION_FILE` with the file's path. Replace `READ_VERSION` with
+a command that reads the version from standard input. The file's format
+belongs to the calling repository. That job reads a version. It does
+not compute one, create a release or write notes.
+
 ### Attaching assets to the draft
 
 The workflow names no language, so it builds nothing and attaches
@@ -107,11 +150,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
 ```
 
-That job is the one addition a caller may carry. It must not compute a
-version, create a release or write notes, because those live here and
-move by the SHA. Uploading to a draft is safe: the release stays
-unpublished until a person publishes it, and publishing is what
-creates the tag.
+The caller may carry an asset job and a version job, and nothing else.
+Neither job may compute a version, create a release or write notes,
+because those live here and move by the SHA. Uploading to a draft is
+safe: the release stays unpublished until a person publishes it, and
+publishing is what creates the tag.
 
 The SHA pins the caller to one version of the body. A change here
 reaches a repository only when its caller moves to the new SHA. A
