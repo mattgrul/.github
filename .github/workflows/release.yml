@@ -1,5 +1,6 @@
-# A release workflow that a repository calls by name. It names no
-# language and no runtime, so it holds for a repository of any kind.
+# A release workflow that a repository calls by name, and that releases
+# this repository when run from here. It names no language and no
+# runtime, so it holds for a repository of any kind.
 #
 # It drafts a release and commits nothing. The branch ruleset lets only
 # a repository admin push to a protected branch, and the token here is
@@ -26,6 +27,14 @@ on:
       tag:
         description: "The tag of the drafted release, such as v1.2.3."
         value: ${{ jobs.release.outputs.tag }}
+  # This repository releases the workflow itself. A tag gives Dependabot
+  # a version to offer, so a caller's pin can move without a hand edit.
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: "The part of the version to raise."
+        type: choice
+        options: [patch, minor, major]
 
 jobs:
   release:
