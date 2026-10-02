@@ -59,7 +59,7 @@ on:
         options: [patch, minor, major]
 jobs:
   release:
-    uses: mattgrul/.github/.github/workflows/release.yml@COMMIT_SHA
+    uses: mattgrul/.github/.github/workflows/release.yml@COMMIT_SHA # vX.Y.Z
     # A called workflow holds no more than its caller grants, and the
     # default token is read only.
     permissions:
@@ -108,7 +108,7 @@ jobs:
 
   release:
     needs: version
-    uses: mattgrul/.github/.github/workflows/release.yml@COMMIT_SHA
+    uses: mattgrul/.github/.github/workflows/release.yml@COMMIT_SHA # vX.Y.Z
     permissions:
       contents: write
     with:
@@ -130,7 +130,7 @@ draft. It reads the draft's tag from the caller:
 ```yaml
 jobs:
   release:
-    uses: mattgrul/.github/.github/workflows/release.yml@COMMIT_SHA
+    uses: mattgrul/.github/.github/workflows/release.yml@COMMIT_SHA # vX.Y.Z
     permissions:
       contents: write
     with:
@@ -159,6 +159,21 @@ publishing is what creates the tag.
 The SHA pins the caller to one version of the body. A change here
 reaches a repository only when its caller moves to the new SHA. A
 `dependabot.yml` in the calling repository that watches the
-`github-actions` ecosystem opens that pull request. GitHub also accepts
-a tag or a branch name after the `@`, and calls the SHA the safest of
-the three.
+`github-actions` ecosystem opens that pull request. Dependabot finds a
+new version through this repository's `vX.Y.Z` tags, and reads the
+caller's version from the comment after the SHA. So write the tag of
+the pinned commit there, as the examples show. GitHub also accepts a
+tag or a branch name after the `@`, and calls the SHA the safest of the
+three.
+
+### Releasing this workflow
+
+This repository releases the workflow with the workflow itself. Run
+Release from the Actions tab here and choose the part to raise:
+
+- major: a caller must change, such as a removed or renamed input.
+- minor: a caller gains something, such as a new input.
+- patch: a fix or a change to these documents.
+
+Publish the draft as for any release. Dependabot offers the new tag to
+each caller.
