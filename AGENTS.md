@@ -96,9 +96,9 @@ admin push and the workflow token is not one. A tag is outside the
 branch ruleset, so the version lives in the tag, and publishing the
 draft creates it.
 
-## The leak scan
+## The gitleaks scan
 
-`.github/workflows/leak-scan.yml` is allowed here for the same reason:
+`.github/workflows/gitleaks-scan.yml` is allowed here for the same reason:
 gitleaks is one binary, and it reads a file of any kind. Keep it that
 way.
 
