@@ -1,0 +1,60 @@
+# A leak scan that a repository calls by name. It runs gitleaks on the
+# files of the commit, and on a pull request on the commits it adds too.
+# It names no language and no runtime, so it holds for a repository of
+# any kind.
+#
+# The rules belong to the calling repository. gitleaks reads
+# .gitleaks.toml from the root of the checkout, and uses its own rules
+# when there is none.
+name: Leak scan
+
+on:
+  workflow_call:
+
+jobs:
+  gitleaks:
+    name: gitleaks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    # Enough to read the repository. The scan writes nothing.
+    permissions:
+      contents: read
+    steps:
+      # The full history lets the pull request scan read the commits
+      # since the base branch. No later step uses git credentials, so the
+      # token stays out of .git/config.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      # The download is checked against the checksum gitleaks publishes
+      # for this version. Dependabot does not see a download, so the
+      # version and the checksum move by hand, together.
+      - name: Install gitleaks
+        env:
+          VERSION: "8.30.1"
+          SHA256: 551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb
+        run: |
+          set -euo pipefail
+          base=https://github.com/gitleaks/gitleaks/releases/download
+          curl -fsSL -o "$RUNNER_TEMP/gitleaks.tgz" \
+            "$base/v${VERSION}/gitleaks_${VERSION}_linux_x64.tar.gz"
+          echo "${SHA256}  $RUNNER_TEMP/gitleaks.tgz" | sha256sum --check
+          mkdir "$RUNNER_TEMP/gitleaks-bin"
+          tar -xzf "$RUNNER_TEMP/gitleaks.tgz" \
+            -C "$RUNNER_TEMP/gitleaks-bin" gitleaks
+          echo "$RUNNER_TEMP/gitleaks-bin" >> "$GITHUB_PATH"
+
+      - name: Scan the files
+        run: gitleaks dir --no-banner --redact .
+
+      # A file scan sees only the last state of a file. A secret added in
+      # one commit and removed in the next is still in the history.
+      - name: Scan the commits of the pull request
+        if: github.event_name == 'pull_request'
+        env:
+          BASE: ${{ github.base_ref }}
+        run: |
+          gitleaks git --no-banner --redact \
+            --log-opts "origin/${BASE}..HEAD" .

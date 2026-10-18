@@ -168,8 +168,9 @@ three.
 
 ### Releasing this workflow
 
-This repository releases the workflow with the workflow itself. Run
-Release from the Actions tab here and choose the part to raise:
+This repository releases its workflows with the release workflow
+itself. One tag covers every workflow here. Run Release from the
+Actions tab here and choose the part to raise:
 
 - major: a caller must change, such as a removed or renamed input.
 - minor: a caller gains something, such as a new input.
@@ -177,3 +178,39 @@ Release from the Actions tab here and choose the part to raise:
 
 Publish the draft as for any release. Dependabot offers the new tag to
 each caller.
+
+## The leak scan
+
+`.github/workflows/leak-scan.yml` is a reusable workflow too. It runs
+[gitleaks][gitleaks] on the files of the commit, and on a pull request
+on the commits it adds. A repository calls it from a workflow of its
+own, by path and commit SHA:
+
+[gitleaks]: https://github.com/gitleaks/gitleaks
+
+```yaml
+# .github/workflows/leak-scan.yml, in a repository that scans
+name: leak-scan
+on:
+  pull_request:
+  push:
+    branches: [main, "*.x"]
+jobs:
+  leak-scan:
+    uses: mattgrul/.github/.github/workflows/leak-scan.yml@COMMIT_SHA # vX.Y.Z
+    permissions:
+      contents: read
+```
+
+The rules belong to the calling repository. gitleaks reads
+`.gitleaks.toml` at the root of that repository, and uses its own rules
+when there is none.
+
+GitHub names the check after both jobs, the caller's first. The caller
+above reports `leak-scan / gitleaks`, and that is the name a ruleset
+requires.
+
+The pin moves as it does for the release workflow: a release here, then
+a Dependabot pull request in the calling repository. gitleaks itself is
+a download that Dependabot does not see. Its version and checksum move
+by hand, here, and reach a caller with the next release.
