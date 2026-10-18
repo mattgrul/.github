@@ -207,7 +207,7 @@ The rules belong to the calling repository. gitleaks reads
 when there is none.
 
 GitHub names the check after both jobs, the caller's first. The caller
-above reports `gitleaks-scan / gitleaks`, and that is the name a ruleset
+above reports `gitleaks-scan / scan`, and that is the name a ruleset
 requires.
 
 The pin moves as it does for the release workflow: a release here, then
