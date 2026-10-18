@@ -12,8 +12,8 @@ on:
   workflow_call:
 
 jobs:
-  gitleaks:
-    name: gitleaks
+  scan:
+    name: scan
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     # Enough to read the repository. The scan writes nothing.

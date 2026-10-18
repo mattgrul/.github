@@ -106,6 +106,9 @@ The rules stay with the caller. Rules here would be facts about one
 repository, so the workflow reads the caller's `.gitleaks.toml` and
 takes no input for it.
 
+The job is named `scan`, and that name is half of the check a caller's
+ruleset requires. Renaming the job, or this file, is a major release.
+
 It pins `actions/checkout` by commit SHA, so `.github/dependabot.yml`
 watches the workflows here, and a release carries the new SHA to each
 caller. Nothing inherits that file. A calling repository keeps its own,
