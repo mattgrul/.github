@@ -3,7 +3,7 @@
 This is the `.github` repository of `mattgrul`. Every file the README
 lists as inherited shows on every repository of the account that has no
 copy of its own, including repositories that do not exist yet. The
-README says what inherits and how the release workflow is called. This
+README says what inherits and how the shared workflows are called. This
 file says how to write here.
 
 ## Write for the repository that shows the file
@@ -27,7 +27,7 @@ out.
 ## Settings that hold these files true
 
 `mattgrul/personal-infra` configures every repository of the account as
-code. Five things in this repository depend on it, and a change there
+code. Six things in this repository depend on it, and a change there
 falsifies them without warning.
 
 - The issue forms set `labels:` on a new issue. `personal-infra` gives
@@ -44,6 +44,10 @@ falsifies them without warning.
   otherwise. A private repository keeps Issues only.
 - The caller example in the README grants `contents: write` because
   `personal-infra` defaults the workflow token to read.
+- `.github/dependabot.yml` labels its pull requests `dependencies`
+  alone. `personal-infra` gives every repository that label and deletes
+  any label it does not name, which would include the ecosystem label
+  Dependabot adds by default.
 
 No setting chooses the branch a pull request targets. The ruleset
 protects `main` and each `N.x` from a direct push and a force push, and
@@ -60,9 +64,6 @@ stops being true.
 - `.github/DISCUSSION_TEMPLATE/`: every repository keeps the categories
   GitHub creates, and a form would describe what one repository
   discusses.
-- `.github/dependabot.yml`: nothing inherits it, and the release
-  workflow pins no action. A calling repository keeps its own, watching
-  `github-actions`, and that is what moves the pinned SHA.
 - `workflow-templates/`: a starter workflow is copied once and drifts
   from here. A repository calls a workflow here instead.
 - A test workflow: it must name a runtime.
@@ -94,6 +95,23 @@ commits nothing, because the ruleset on a protected branch lets only an
 admin push and the workflow token is not one. A tag is outside the
 branch ruleset, so the version lives in the tag, and publishing the
 draft creates it.
+
+## The leak scan
+
+`.github/workflows/leak-scan.yml` is allowed here for the same reason:
+gitleaks is one binary, and it reads a file of any kind. Keep it that
+way.
+
+The rules stay with the caller. Rules here would be facts about one
+repository, so the workflow reads the caller's `.gitleaks.toml` and
+takes no input for it.
+
+It pins `actions/checkout` by commit SHA, so `.github/dependabot.yml`
+watches the workflows here, and a release carries the new SHA to each
+caller. Nothing inherits that file. A calling repository keeps its own,
+watching `github-actions`, and that is what moves its pin. Dependabot
+does not see the gitleaks download, so its version and checksum move
+by hand, together.
 
 ## Conventions
 

@@ -1,0 +1,26 @@
+# Keep the actions that the workflows here pin current. A release then
+# carries the new SHA to each caller.
+#
+# A commit pin stops a retargeted tag from changing what runs, but it
+# also freezes the version. The cooldown holds a new release back for
+# five days, so a malicious one has time to be found before it is
+# offered here.
+#
+# Dependabot adds an ecosystem label beside `dependencies` by default.
+# mattgrul/personal-infra names only `dependencies` on every repository
+# and deletes a label it does not name, so this keeps Dependabot to the
+# one label.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 5
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+    labels:
+      - dependencies
