@@ -3,7 +3,7 @@
 #
 # A commit pin stops a retargeted tag from changing what runs, but it
 # also freezes the version. The cooldown holds a new release back for
-# five days, so a malicious one has time to be found before it is
+# two days, so a malicious one has time to be found before it is
 # offered here.
 #
 # Dependabot adds an ecosystem label beside `dependencies` by default.
@@ -17,7 +17,7 @@ updates:
     schedule:
       interval: weekly
     cooldown:
-      default-days: 5
+      default-days: 2
     groups:
       github-actions:
         patterns:
