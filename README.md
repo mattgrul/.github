@@ -169,7 +169,7 @@ three.
 ### Releasing this workflow
 
 This repository releases its workflows with the release workflow
-itself. One tag covers every workflow here. Run Release from the
+itself. One tag covers every workflow and action here. Run Release from the
 Actions tab here and choose the part to raise:
 
 - major: a caller must change, such as a removed or renamed input.
@@ -181,11 +181,12 @@ each caller.
 
 ## The gitleaks scan
 
-`.github/workflows/gitleaks-scan.yml` is a reusable workflow too. It runs
-[gitleaks][gitleaks] on the files of the commit, and on a pull request
-on the commits it adds. A repository calls it from a workflow of its
-own, by path and commit SHA:
+`gitleaks-scan/` is an [action][composite] that runs [gitleaks][gitleaks]
+on the files of the commit, and on a pull request on the commits it
+adds. A repository runs it as the one step of a job, by path and commit
+SHA:
 
+[composite]: https://docs.github.com/en/actions/tutorials/create-actions/create-a-composite-action
 [gitleaks]: https://github.com/gitleaks/gitleaks
 
 ```yaml
@@ -195,22 +196,32 @@ on:
   pull_request:
   push:
     branches: [main, "*.x"]
+permissions:
+  contents: read
 jobs:
   gitleaks-scan:
-    uses: mattgrul/.github/.github/workflows/gitleaks-scan.yml@COMMIT_SHA # vX.Y.Z
-    permissions:
-      contents: read
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: mattgrul/.github/gitleaks-scan@COMMIT_SHA # vX.Y.Z
 ```
 
-The rules belong to the calling repository. gitleaks reads
-`.gitleaks.toml` at the root of that repository, and uses its own rules
-when there is none.
+The action checks the repository out itself, so the job needs no other
+step. GitHub names the check after the job. The caller above reports
+`gitleaks-scan`, and that is the name a ruleset requires.
 
-GitHub names the check after both jobs, the caller's first. The caller
-above reports `gitleaks-scan / scan`, and that is the name a ruleset
-requires.
+The rules live here, in `gitleaks-scan/gitleaks.toml`: gitleaks' own
+rules for keys and tokens, and two for personal data, email addresses
+and home folder paths. A repository with a `.gitleaks.toml` of its own
+uses that file instead, and none of the shared rules. For one known
+finding, a `gitleaks:allow` comment on its line, or an entry in a
+`.gitleaksignore`, keeps the shared rules.
 
-The pin moves as it does for the release workflow: a release here, then
-a Dependabot pull request in the calling repository. gitleaks itself is
-a download that Dependabot does not see. Its version and checksum move
-by hand, here, and reach a caller with the next release.
+gitleaks runs from its own image, pinned by digest in
+`gitleaks-scan/Dockerfile`. Dependabot moves that pin here, and the
+pins of the actions the scan uses. A release carries them to each
+caller, and the caller's pin moves as it does for the release workflow:
+a Dependabot pull request in the calling repository.
+
+`.github/workflows/test-gitleaks-scan.yml` runs the action on this
+repository, then `gitleaks-scan/test` shows what the rules catch and
+what they pass.

@@ -1,0 +1,31 @@
+# The shared rules of the gitleaks scan. They hold for any repository:
+# gitleaks' own rules for keys and tokens, and two for personal data.
+#
+# A repository with a .gitleaks.toml of its own uses that file instead,
+# and none of these rules. For one known finding, a `gitleaks:allow`
+# comment on its line or a .gitleaksignore entry keeps these rules.
+
+title = "gitleaks scan shared rules"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "email-address"
+description = "An email address is personal data. Use one at example.com."
+regex = '''(?i)\b[a-z0-9._%+-]+@[a-z0-9-]+(?:\.[a-z0-9-]+)*\.[a-z]{2,}\b'''
+keywords = ["@"]
+
+  [[rules.allowlists]]
+  description = "Addresses at domains that are reserved for examples."
+  regexTarget = "match"
+  regexes = ['''(?i)@(?:[a-z0-9-]+\.)*(?:example\.(?:com|org|net)|invalid|test|localhost)$''']
+
+[[rules]]
+id = "home-folder-path"
+description = "A home folder path is personal data. Write ~ instead."
+# The secret is the user name, not the whole path: gitleaks' default
+# allowlist drops anything that looks like /home/....
+regex = '''(?m)(?:/home|/Users)/([A-Za-z_][A-Za-z0-9._-]*)(?:[^A-Za-z0-9._-]|$)'''
+secretGroup = 1
+keywords = ["/home/", "/users/"]

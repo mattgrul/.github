@@ -1,0 +1,40 @@
+# A gitleaks scan that a repository runs as one step. It checks the
+# repository out, scans its files, and on a pull request also the commits
+# the pull request adds. It names no language and no runtime, so it holds
+# for a repository of any kind.
+name: gitleaks scan
+description: >-
+  Scan the files, and the commits of a pull request, for secrets and
+  personal data.
+
+runs:
+  using: composite
+  steps:
+    # The full history lets the pull request scan read the commits since
+    # the base branch. No later step uses git credentials, so the token
+    # stays out of .git/config.
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        fetch-depth: 0
+        persist-credentials: false
+
+    - name: Build the scanner
+      shell: bash
+      run: docker build --quiet --tag gitleaks-scan "$GITHUB_ACTION_PATH"
+
+    - name: Scan the files
+      shell: bash
+      run: >-
+        docker run --rm -v "$GITHUB_WORKSPACE:/repo:ro" -w /repo gitleaks-scan
+        dir
+
+    # A file scan sees only the last state of a file. A secret added in
+    # one commit and removed in the next is still in the history.
+    - name: Scan the commits of the pull request
+      if: github.event_name == 'pull_request'
+      shell: bash
+      env:
+        BASE: ${{ github.base_ref }}
+      run: >-
+        docker run --rm -v "$GITHUB_WORKSPACE:/repo:ro" -w /repo gitleaks-scan
+        git --log-opts "origin/${BASE}..HEAD"

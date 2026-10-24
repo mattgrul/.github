@@ -1,0 +1,28 @@
+# Prove the gitleaks scan before a release carries it to a caller. This
+# repository runs the action as a caller does, and so scans itself. Then
+# the test shows what the shared rules catch and what they pass.
+name: test-gitleaks-scan
+
+on:
+  pull_request:
+  push:
+    branches: [main, "*.x"]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      # A local action is read from the checkout, so the action's own
+      # checkout comes second and replaces this one with the same commit.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: ./gitleaks-scan
+
+      - name: Test the rules and the commit scan
+        run: gitleaks-scan/test

@@ -66,7 +66,8 @@ stops being true.
   discusses.
 - `workflow-templates/`: a starter workflow is copied once and drifts
   from here. A repository calls a workflow here instead.
-- A test workflow: it must name a runtime.
+- A test workflow for callers: it must name a runtime. The gitleaks
+  scan's own test names none.
 - A stock code of conduct: GitHub awards its community-profile tick only
   for a stock template. Every stock template names a contact and
   promises a reporting process, and the account has neither.
@@ -98,23 +99,26 @@ draft creates it.
 
 ## The gitleaks scan
 
-`.github/workflows/gitleaks-scan.yml` is allowed here for the same reason:
-gitleaks is one binary, and it reads a file of any kind. Keep it that
-way.
+`gitleaks-scan/` is allowed here for the same reason: gitleaks is one
+image, and it reads a file of any kind. Keep it that way.
 
-The rules stay with the caller. Rules here would be facts about one
-repository, so the workflow reads the caller's `.gitleaks.toml` and
-takes no input for it.
+The shared rules live here because they hold for any repository: keys,
+tokens, email addresses and home folder paths. A caller's own
+`.gitleaks.toml` replaces them, so the action takes no input for rules.
 
-The job is named `scan`, and that name is half of the check a caller's
-ruleset requires. Renaming the job, or this file, is a major release.
+It is an action, not a reusable workflow, because an action can read
+its own files: the rules, and the Dockerfile that pins gitleaks. A
+reusable workflow sees only the caller's checkout. A caller calls it by
+the folder's path, so renaming the folder is a major release.
 
-It pins `actions/checkout` by commit SHA, so `.github/dependabot.yml`
-watches the workflows here, and a release carries the new SHA to each
-caller. Nothing inherits that file. A calling repository keeps its own,
-watching `github-actions`, and that is what moves its pin. Dependabot
-does not see the gitleaks download, so its version and checksum move
-by hand, together.
+The Dockerfile pins gitleaks' image by digest, and `action.yml` pins
+`actions/checkout` by commit SHA. `.github/dependabot.yml` watches both,
+and a release carries the new pins to each caller. Nothing inherits
+that file. A calling repository keeps its own, watching
+`github-actions`, and that is what moves its pin.
+
+`gitleaks-scan/test` makes its fake secrets when it runs, so no secret
+is ever committed here. Keep it that way.
 
 ## Conventions
 
