@@ -1,0 +1,92 @@
+#!/bin/bash
+# Prove the scanner. The shared rules catch a key, an email address and a
+# home folder path, and pass the safe spellings. A repository's own
+# .gitleaks.toml replaces them. The commit scan finds a secret that a
+# later commit removed. Each fake value is made here, when the test runs,
+# so none is ever committed.
+set -euo pipefail
+
+here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+docker build --quiet --tag gitleaks-scan "$here" >/dev/null
+work=$(mktemp -d)
+trap 'rm -rf "$work"' EXIT
+failed=0
+
+# pick CHARS N: N characters drawn from CHARS.
+pick() {
+  local out='' i
+  for ((i = 0; i < $2; i++)); do out+=${1:RANDOM % ${#1}:1}; done
+  echo "$out"
+}
+lower=abcdefghijklmnopqrstuvwxyz
+token=ghp_$(pick "${lower}ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" 36)
+email="$(pick $lower 8).$(pick $lower 5)@$(pick $lower 7).com"
+user=$(pick $lower 7)
+
+# A folder under $work with one file.txt that holds the given text.
+tree() {
+  mkdir -p "$work/$1"
+  printf '%s\n' "$2" >"$work/$1/file.txt"
+}
+
+# expect FOLDER RULES SCAN...: run the scan on $work/FOLDER and compare the
+# rules it finds, as one sorted line, with RULES. Empty RULES means a clean
+# scan, which must also exit 0.
+expect() {
+  local folder=$1 want=$2 report code=0 found want_code=1
+  shift 2
+  report=$(docker run --rm -v "$work/$folder:/repo:ro" -w /repo \
+    gitleaks-scan "$@" --report-format json --report-path - \
+    2>/dev/null) || code=$?
+  found=$(jq -r '[.[].RuleID] | unique | join(" ")' <<<"$report" 2>/dev/null) ||
+    found="(no report)"
+  [[ -z "$want" ]] && want_code=0
+  if [[ "$found" == "$want" && "$code" == "$want_code" ]]; then
+    echo "ok    $folder ($1)"
+  else
+    echo "FAIL  $folder ($1): found [$found], exit $code;" \
+      "expected [$want], exit $want_code"
+    failed=1
+  fi
+}
+
+tree key "value = $token"
+expect key github-pat dir
+
+tree email "value = $email"
+expect email email-address dir
+
+n=0
+for text in "/home/$user/projects/x" "HOME=/home/$user" \
+  "path = \"/home/$user\"" "cd /home/$user && ls" "/home/$user" \
+  "/Users/$user/Documents"; do
+  n=$((n + 1))
+  tree "home-path-$n" "$text"
+  expect "home-path-$n" home-folder-path dir
+done
+
+tree safe "see ~/.config and ~/projects
+write to you@example.com or a@b.example.org or root@localhost"
+expect safe "" dir
+
+tree own-rules "value = $email"
+printf '[extend]\nuseDefault = true\n' >"$work/own-rules/.gitleaks.toml"
+expect own-rules "" dir
+
+repo="$work/history"
+git_() {
+  git -C "$repo" -c user.name=test -c user.email=test@example.invalid "$@"
+}
+mkdir "$repo"
+git_ init -q
+git_ commit -q --allow-empty -m base
+base=$(git_ rev-parse HEAD)
+printf 'value = %s\n' "$token" >"$repo/file.txt"
+git_ add file.txt
+git_ commit -q -m add
+git_ rm -q file.txt
+git_ commit -q -m remove
+expect history "" dir
+expect history github-pat git --log-opts "$base..HEAD"
+
+exit "$failed"

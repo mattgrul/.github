@@ -1,9 +1,10 @@
-# Keep the actions that the workflows here pin current. A release then
-# carries the new SHA to each caller.
+# Keep what the workflows and the gitleaks scan here pin current: the
+# actions, and the gitleaks image. A release then carries the new pins
+# to each caller.
 #
-# A commit pin stops a retargeted tag from changing what runs, but it
-# also freezes the version. The cooldown holds a new release back for
-# two days, so a malicious one has time to be found before it is
+# A commit or digest pin stops a retargeted tag from changing what runs,
+# but it also freezes the version. The cooldown holds a new release back
+# for two days, so a malicious one has time to be found before it is
 # offered here.
 #
 # Dependabot adds an ecosystem label beside `dependencies` by default.
@@ -12,8 +13,12 @@
 # one label.
 version: 2
 updates:
+  # "/" covers .github/workflows. Dependabot reads an action.yml only in
+  # a folder named here.
   - package-ecosystem: github-actions
-    directory: /
+    directories:
+      - /
+      - /gitleaks-scan
     schedule:
       interval: weekly
     cooldown:
@@ -22,5 +27,13 @@ updates:
       github-actions:
         patterns:
           - "*"
+    labels:
+      - dependencies
+  - package-ecosystem: docker
+    directory: /gitleaks-scan
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 2
     labels:
       - dependencies

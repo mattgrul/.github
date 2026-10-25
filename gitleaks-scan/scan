@@ -1,0 +1,12 @@
+#!/bin/sh
+# Run gitleaks on the repository mounted at /repo, with its own
+# .gitleaks.toml when it has one, and with the shared rules otherwise.
+# The arguments name the scan: "dir", or "git" with its options.
+set -eu
+
+config=/etc/gitleaks/shared.toml
+if [ -f /repo/.gitleaks.toml ]; then
+  config=/repo/.gitleaks.toml
+fi
+
+exec gitleaks "$@" --no-banner --redact --config "$config" /repo
