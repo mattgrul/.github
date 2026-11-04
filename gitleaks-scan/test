@@ -1,9 +1,10 @@
 #!/bin/bash
 # Prove the scanner. The shared rules catch a key, an email address and a
 # home folder path, and pass the safe spellings. A repository's own
-# .gitleaks.toml replaces them. The commit scan finds a secret that a
-# later commit removed. Each fake value is made here, when the test runs,
-# so none is ever committed.
+# .gitleaks.toml replaces them, and its .gitleaksignore drops a known
+# finding. The commit scan finds a secret that a later commit removed.
+# Each fake value is made here, when the test runs, so none is ever
+# committed.
 set -euo pipefail
 
 here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
@@ -79,6 +80,11 @@ done
 tree own-rules "value = $email"
 printf '[extend]\nuseDefault = true\n' >"$work/own-rules/.gitleaks.toml"
 expect own-rules "" dir
+
+tree ignored "value = $token"
+printf '# A known finding.\nfile.txt:github-pat:1\n' \
+  >"$work/ignored/.gitleaksignore"
+expect ignored "" dir
 
 repo="$work/history"
 git_() {
