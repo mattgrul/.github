@@ -26,6 +26,13 @@ id = "home-folder-path"
 description = "A home folder path is personal data. Write ~ instead."
 # The secret is the user name, not the whole path: gitleaks' default
 # allowlist drops anything that looks like /home/....
-regex = '''(?m)(?:/home|/Users)/([A-Za-z_][A-Za-z0-9._-]*)(?:[^A-Za-z0-9._-]|$)'''
+# A home folder path starts a path. After a letter, a digit, a dot or a
+# closing bracket, as in $tmp/home/... or example.org/home/..., /home is
+# part of a longer path.
+regex = '''(?m)(?:^|[^A-Za-z0-9_.)}])(?:/home|/Users)/([A-Za-z_][A-Za-z0-9._-]*)(?:[^A-Za-z0-9._-]|$)'''
 secretGroup = 1
 keywords = ["/home/", "/users/"]
+
+  [[rules.allowlists]]
+  description = "Names that stand in for any user in examples and tests."
+  regexes = ['''^(?:user|username|me|test)$''']

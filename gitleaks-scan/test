@@ -59,15 +59,22 @@ expect email email-address dir
 n=0
 for text in "/home/$user/projects/x" "HOME=/home/$user" \
   "path = \"/home/$user\"" "cd /home/$user && ls" "/home/$user" \
-  "/Users/$user/Documents"; do
+  "/Users/$user/Documents" "\${HOME:-/home/$user}"; do
   n=$((n + 1))
   tree "home-path-$n" "$text"
   expect "home-path-$n" home-folder-path dir
 done
 
 tree safe "see ~/.config and ~/projects
-write to you@example.com or a@b.example.org or root@localhost"
+write to you@example.com or a@b.example.org or root@localhost
+mkdir \"\$tmp/home/$user\" \"\${tmp:?}/home/$user\" ./home/$user
+https://example.org/home/$user"
 expect safe "" dir
+
+for name in user username me test; do
+  tree "stand-in-$name" "HOME=/home/$name and /Users/$name"
+  expect "stand-in-$name" "" dir
+done
 
 tree own-rules "value = $email"
 printf '[extend]\nuseDefault = true\n' >"$work/own-rules/.gitleaks.toml"
@@ -83,7 +90,8 @@ git_ commit -q --allow-empty -m base
 base=$(git_ rev-parse HEAD)
 printf 'value = %s\n' "$token" >"$repo/file.txt"
 git_ add file.txt
-git_ commit -q -m add
+# A gitleaks pre-commit hook on this computer would stop the commit.
+git_ commit -q --no-verify -m add
 git_ rm -q file.txt
 git_ commit -q -m remove
 expect history "" dir
