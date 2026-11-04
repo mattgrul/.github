@@ -9,4 +9,8 @@ if [ -f /repo/.gitleaks.toml ]; then
   config=/repo/.gitleaks.toml
 fi
 
-exec gitleaks "$@" --no-banner --redact --config "$config" /repo
+# gitleaks reports each path as it was given. Scanning . from /repo
+# reports src/app.go, the path a .gitleaksignore entry names, and not
+# /repo/src/app.go.
+cd /repo
+exec gitleaks "$@" --no-banner --redact --config "$config" .
