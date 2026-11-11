@@ -39,6 +39,14 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    # Two runs that start together would both pass the check for an
+    # existing release and draft the same version twice. In one group,
+    # runs take turns, so the second sees the draft of the first. The name
+    # must differ from any group of a caller, which could otherwise cancel
+    # the caller's own run.
+    concurrency:
+      group: release-draft
+      cancel-in-progress: false
     # Enough to draft a release. Nothing here writes a branch or a tag.
     permissions:
       contents: write
