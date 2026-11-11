@@ -58,6 +58,7 @@ jobs:
           REPO: ${{ github.repository }}
           SHA: ${{ github.sha }}
           BRANCH: ${{ github.ref_name }}
+          REF_TYPE: ${{ github.ref_type }}
           DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
         run: |
           set -euo pipefail
@@ -74,6 +75,13 @@ jobs:
               *) echo "bump must be major, minor or patch. Got '$BUMP'." >&2
                  exit 1 ;;
             esac
+          fi
+
+          # BRANCH holds the short name of the ref, and a tag can carry the
+          # name of a branch. So the ref must be a branch.
+          if [[ "$REF_TYPE" != branch ]]; then
+            echo "Release from a branch. Got the $REF_TYPE '$BRANCH'." >&2
+            exit 1
           fi
 
           # The branch model releases from the default branch and from a
