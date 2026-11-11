@@ -1,0 +1,26 @@
+# The required check "gitleaks-scan": no secret and no personal data in
+# the files or the new commits. A caller runs the scan from a release.
+# This repository runs it from its own checkout, and so proves a change
+# to the scan before a release carries it to a caller.
+name: gitleaks-scan
+
+on:
+  pull_request:
+  push:
+    branches: [main, "*.x"]
+
+permissions:
+  contents: read
+
+jobs:
+  gitleaks-scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      # A local action is read from the checkout, so the action's own
+      # checkout comes second and replaces this one with the same commit.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: ./gitleaks-scan

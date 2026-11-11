@@ -1,0 +1,178 @@
+# A release workflow that a repository calls by path, and that releases
+# this repository when run from here. It names no language and no
+# runtime, so it holds for a repository of any kind.
+#
+# It drafts a release and commits nothing, because the branch ruleset
+# refuses every direct push to a protected branch. A branch ruleset does
+# not restrict a tag, so the version lives in the tag, which GitHub
+# creates when the draft is published.
+name: Release
+
+on:
+  workflow_call:
+    inputs:
+      bump:
+        description: >-
+          The part of the version to raise: major, minor or patch.
+          Give this or version, not both.
+        type: string
+        required: false
+      version:
+        description: >-
+          The version to release, such as 1.2.3, without the v.
+          Give this or bump, not both.
+        type: string
+        required: false
+    outputs:
+      tag:
+        description: "The tag of the drafted release, such as v1.2.3."
+        value: ${{ jobs.release.outputs.tag }}
+  # This repository releases the workflow itself. A tag gives Dependabot
+  # a version to offer, so a caller's pin can move without a hand edit.
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: "The part of the version to raise."
+        type: choice
+        options: [patch, minor, major]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    # Enough to draft a release. Nothing here writes a branch or a tag.
+    permissions:
+      contents: write
+    # A caller that attaches its own assets needs the draft's tag. Without
+    # it the caller has to find the draft by matching a commit, which picks
+    # arbitrarily when two drafts target one commit.
+    outputs:
+      tag: ${{ steps.cut.outputs.tag }}
+    steps:
+      - name: Cut the release
+        id: cut
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BUMP: ${{ inputs.bump }}
+          VERSION: ${{ inputs.version }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
+          BRANCH: ${{ github.ref_name }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          set -euo pipefail
+
+          if [[ -n "$BUMP" && -n "$VERSION" ]] ||
+             [[ -z "$BUMP" && -z "$VERSION" ]]; then
+            echo "Give either bump or version, not both or neither." >&2
+            exit 1
+          fi
+
+          if [[ -n "$BUMP" ]]; then
+            case "$BUMP" in
+              major|minor|patch) ;;
+              *) echo "bump must be major, minor or patch. Got '$BUMP'." >&2
+                 exit 1 ;;
+            esac
+          fi
+
+          # The branch model releases from the default branch and from a
+          # released major line, such as 1.x. Anywhere else is a mistake,
+          # not a release. On a major line, line holds its major.
+          line=
+          if [[ "$BRANCH" =~ ^([0-9]+)\.x$ ]]; then
+            line=${BASH_REMATCH[1]}
+          elif [[ "$BRANCH" != "$DEFAULT_BRANCH" ]]; then
+            echo "Release from $DEFAULT_BRANCH or an N.x branch." \
+              "Got '$BRANCH'." >&2
+            exit 1
+          fi
+
+          # git/refs/tags answers 404 on a repository that has no tag yet.
+          # Any other failure stops the run, so a lost answer never reads as
+          # "no tags" and drafts v0.0.1.
+          if ! refs=$(gh api "repos/$REPO/git/refs/tags" --jq '.[].ref' \
+                      2>"$RUNNER_TEMP/refs.err"); then
+            if ! grep -q 'HTTP 404' "$RUNNER_TEMP/refs.err"; then
+              cat "$RUNNER_TEMP/refs.err" >&2
+              exit 1
+            fi
+            refs=
+          fi
+          # A major line counts from its own highest tag, not the highest of
+          # all, so a fix on 1.x drafts v1.0.2 even when v2.0.0 exists.
+          major_re='[0-9]\+'
+          if [[ -n "$line" ]]; then
+            major_re=$line
+          fi
+          last=$(sed -n \
+                   "s|^refs/tags/\(v$major_re\.[0-9]\+\.[0-9]\+\)\$|\1|p" \
+                   <<<"$refs" | sort -V | tail -1)
+
+          if [[ -n "$line" ]]; then
+            if [[ -z "$last" ]]; then
+              echo "$BRANCH has no v$line.Y.Z tag to release from." >&2
+              exit 1
+            fi
+            if [[ "$BUMP" == major ]]; then
+              echo "A major release comes from $DEFAULT_BRANCH," \
+                "not $BRANCH." >&2
+              exit 1
+            fi
+          fi
+          # No tag that reads as a version means: start from v0.0.0.
+          last=${last:-v0.0.0}
+
+          if [[ -n "$VERSION" ]]; then
+            if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+              echo "version must be X.Y.Z without the v. Got '$VERSION'." >&2
+              exit 1
+            fi
+            if [[ -n "$line" && "$VERSION" != "$line".* ]]; then
+              echo "$BRANCH releases v$line.Y.Z only. Got '$VERSION'." >&2
+              exit 1
+            fi
+            tag="v$VERSION"
+            # A published version cannot be released again or rewound.
+            if ! printf '%s\n' "$last" "$tag" | sort -V -C -u; then
+              echo "$tag must be strictly above $last." >&2
+              exit 1
+            fi
+          else
+            IFS=. read -r major minor patch <<<"${last#v}"
+            case "$BUMP" in
+              major) major=$((major + 1)); minor=0; patch=0 ;;
+              minor) minor=$((minor + 1)); patch=0 ;;
+              patch) patch=$((patch + 1)) ;;
+            esac
+            tag="v$major.$minor.$patch"
+          fi
+
+          # A draft has no tag, so the lookup above does not see it. Without
+          # this check, a second run before the draft is published drafts
+          # the same version again.
+          releases=$(gh api --paginate "repos/$REPO/releases" \
+                       --jq '.[].tag_name')
+          if grep -qxF "$tag" <<<"$releases"; then
+            echo "A release $tag exists already. Publish or delete it." >&2
+            exit 1
+          fi
+
+          echo "$last -> $tag on $BRANCH"
+
+          # --generate-notes writes the notes from the pull request titles
+          # merged since the release before this one, as CONTRIBUTING.md
+          # promises. The call names no start tag, because GitHub finds the
+          # start by itself. On an N.x branch it starts from the last vN.Y.Z
+          # release, which is the correct one, and not from the newest
+          # release of the repository.
+          # --draft holds the release for review, and GitHub creates the tag
+          # when the draft is published.
+          gh release create "$tag" \
+            --repo "$REPO" \
+            --target "$SHA" \
+            --title "$tag" \
+            --draft \
+            --generate-notes
+
+          echo "tag=$tag" >>"$GITHUB_OUTPUT"

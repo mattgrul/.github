@@ -1,0 +1,97 @@
+# The form assumes nothing about a language, a runtime or an operating
+# system. The three required text fields are the shape of a good bug
+# report in any domain. The environment field asks for relevant context
+# without naming a tool.
+name: Bug report
+description: Something behaves differently from how it should
+# One label for the category and one for the state, as a triaged issue
+# carries.
+# Both labels must exist in this repository, or GitHub drops the missing
+# one without a warning.
+labels: [bug, needs-triage]
+
+body:
+  # The form opens at issues/new, so "../discussions" points to the
+  # Discussions of the repository that shows it. A repository with
+  # Discussions turned off shows a 404 there.
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for a crash, a regression or other broken behavior.
+        Ideas and questions belong in [Discussions](../discussions).
+        Search existing issues first, and keep the report to one problem.
+
+  - type: checkboxes
+    id: before
+    attributes:
+      label: Before submitting
+      description: Check both before you submit.
+      options:
+        - label: I searched existing issues and did not find a duplicate.
+          required: true
+        - label: >-
+            I included enough detail to reproduce or investigate the
+            problem.
+          required: true
+
+  - type: textarea
+    id: happened
+    attributes:
+      label: What happened
+      description: What you saw. Quote error messages exactly.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected instead
+      description: What should have happened, and why you expected it.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: How to reproduce it
+      description: The smallest sequence that shows the problem.
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Whatever is relevant here.
+      placeholder: |
+        The versions and the conditions that affect the problem.
+    validations:
+      required: false
+
+  - type: textarea
+    id: more
+    attributes:
+      label: Output, logs, or anything else
+      description: Paste the most relevant output only. Redact secrets.
+      render: text
+    validations:
+      required: false
+
+  - type: upload
+    id: files
+    attributes:
+      label: Screenshots, recordings, or supporting files
+      description: >-
+        Upload screenshots, short recordings, repro archives or log files.
+        Redact secrets before you upload.
+    validations:
+      required: false
+
+  - type: input
+    id: version
+    attributes:
+      label: Version or commit
+      description: The release version, commit SHA or branch name, if known.
+      placeholder: main @ abc1234
+    validations:
+      required: false

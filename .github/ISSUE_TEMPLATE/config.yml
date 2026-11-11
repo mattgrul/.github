@@ -1,0 +1,8 @@
+# Every issue starts from a form. The tracker holds defects and agreed
+# work. An idea or a question goes to Discussions, as CONTRIBUTING.md
+# says.
+#
+# There is no security link here. Where private vulnerability reporting
+# is on, GitHub adds its own entry to the chooser, and a second one only
+# repeats it.
+blank_issues_enabled: false

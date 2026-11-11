@@ -1,0 +1,122 @@
+#!/bin/bash
+# Prove the scanner. The shared rules catch a key, an email address and a
+# home folder path, and pass the safe spellings. A repository's own
+# .gitleaks.toml replaces them, and its .gitleaksignore drops a known
+# finding. The commit scan finds a secret that a later commit removed.
+# The message scan finds an address in a commit message, passes one in a
+# Co-authored-by or Signed-off-by trailer, and drops a known finding that
+# .gitleaksignore names by its commit.
+# Each fake value is made here, when the test runs, so none is ever
+# committed.
+set -euo pipefail
+
+here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+docker build --quiet --tag gitleaks-scan "$here" >/dev/null
+work=$(mktemp -d)
+trap 'rm -rf "$work"' EXIT
+failed=0
+
+# pick CHARS N: N characters drawn from CHARS.
+pick() {
+  local out='' i
+  for ((i = 0; i < $2; i++)); do out+=${1:RANDOM % ${#1}:1}; done
+  echo "$out"
+}
+lower=abcdefghijklmnopqrstuvwxyz
+token=ghp_$(pick "${lower}ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" 36)
+email="$(pick $lower 8).$(pick $lower 5)@$(pick $lower 7).com"
+user=$(pick $lower 7)
+host=$(pick $lower 7).com
+
+# tree FOLDER TEXT: make $work/FOLDER with one file.txt that holds TEXT.
+tree() {
+  mkdir -p "$work/$1"
+  printf '%s\n' "$2" >"$work/$1/file.txt"
+}
+
+# expect FOLDER RULES SCAN...: run the scan on $work/FOLDER and compare the
+# rules its log names, as one sorted line, with RULES. Empty RULES means a
+# clean scan, which must also exit 0. The log stays in $log.
+expect() {
+  local folder=$1 want=$2 code=0 found want_code=1
+  shift 2
+  log=$(docker run --rm -v "$work/$folder:/repo:ro" -w /repo \
+    gitleaks-scan "$@" 2>/dev/null) || code=$?
+  found=$(sed -n 's/^RuleID: *//p' <<<"$log" | sort -u | paste -sd' ')
+  [[ -z "$want" ]] && want_code=0
+  if [[ "$found" == "$want" && "$code" == "$want_code" ]]; then
+    echo "ok    $folder ($1)"
+  else
+    echo "FAIL  $folder ($1): found [$found], exit $code;" \
+      "expected [$want], exit $want_code"
+    failed=1
+  fi
+}
+
+tree key "value = $token"
+expect key github-pat dir
+
+tree email "value = $email"
+expect email email-address dir
+
+n=0
+for text in "/home/$user/projects/x" "HOME=/home/$user" \
+  "path = \"/home/$user\"" "cd /home/$user && ls" "/home/$user" \
+  "/Users/$user/Documents" "\${HOME:-/home/$user}"; do
+  n=$((n + 1))
+  tree "home-path-$n" "$text"
+  expect "home-path-$n" home-folder-path dir
+done
+
+tree safe "see ~/.config and ~/projects
+write to you@example.com or a@b.example.org or root@localhost
+mkdir \"\$tmp/home/$user\" \"\${tmp:?}/home/$user\" ./home/$user
+https://example.org/home/$user
+git clone git@$host:owner/repository.git"
+expect safe "" dir
+
+for name in user username me test; do
+  tree "stand-in-$name" "HOME=/home/$name and /Users/$name"
+  expect "stand-in-$name" "" dir
+done
+
+tree own-rules "value = $email"
+printf '[extend]\nuseDefault = true\n' >"$work/own-rules/.gitleaks.toml"
+expect own-rules "" dir
+
+tree ignored "value = $token"
+printf '# A known finding.\nfile.txt:github-pat:1\n' \
+  >"$work/ignored/.gitleaksignore"
+expect ignored "" dir
+
+repo="$work/history"
+git_() {
+  git -C "$repo" -c user.name=test -c user.email=test@example.invalid "$@"
+}
+mkdir "$repo"
+git_ init -q
+git_ commit -q --allow-empty -m base
+base=$(git_ rev-parse HEAD)
+printf 'value = %s\n' "$token" >"$repo/file.txt"
+git_ add file.txt
+# A gitleaks pre-commit hook on this computer would stop the commit.
+git_ commit -q --no-verify -m add
+git_ rm -q file.txt
+git_ commit -q -m remove
+expect history "" dir
+expect history github-pat git --log-opts "$base..HEAD"
+git_ commit -q --allow-empty -m change \
+  -m "Co-authored-by: A Name <$email>" -m "Signed-off-by: A Name <$email>"
+trailer=$(git_ rev-parse HEAD)
+expect history "" messages "$base..HEAD"
+git_ commit -q --allow-empty -m "ask $email"
+expect history email-address messages "$trailer..HEAD"
+if ! grep -qx "File: *$(git_ rev-parse HEAD)" <<<"$log"; then
+  echo "FAIL  history (messages): the log does not name the commit"
+  failed=1
+fi
+printf '%s:email-address:1\n' "$(git_ rev-parse HEAD)" \
+  >"$repo/.gitleaksignore"
+expect history "" messages "$trailer..HEAD"
+
+exit "$failed"

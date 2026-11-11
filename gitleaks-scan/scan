@@ -1,0 +1,34 @@
+#!/bin/sh
+# Run gitleaks on the repository mounted at /repo, with its own
+# .gitleaks.toml when it has one, and with the shared rules otherwise.
+# The arguments name the scan: "dir", "git" with its options, or
+# "messages" with a range of commits.
+set -eu
+
+config=/etc/gitleaks/shared.toml
+if [ -f /repo/.gitleaks.toml ]; then
+  config=/repo/.gitleaks.toml
+fi
+
+# gitleaks reports each path as it was given. Scanning . from /repo
+# reports src/app.go, the path a .gitleaksignore entry names, and not
+# /repo/src/app.go.
+cd /repo
+
+# gitleaks reads the patch of a commit and not its message. Each message
+# becomes a file named after its commit, so a finding names the commit,
+# and a .gitleaksignore entry names it as commit:rule:line.
+if [ "$1" = messages ]; then
+  commits=$(git rev-list "$2")
+  shift 2
+  mkdir /tmp/messages
+  for commit in $commits; do
+    git show -s --format=%B "$commit" >"/tmp/messages/$commit"
+  done
+  cd /tmp/messages
+  set -- dir "$@" --gitleaks-ignore-path /repo
+fi
+
+# --verbose names each finding in the log: its rule, its file and its
+# line. --redact keeps the value itself out of the log.
+exec gitleaks "$@" --no-banner --redact --verbose --config "$config" .

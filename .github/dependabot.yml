@@ -1,0 +1,68 @@
+# BEGIN shared text. Change it in the template repository. Write this repository's own text outside these lines.
+# Keep the dependencies current. Add an entry for each other kind of
+# package, if the repository uses one.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: / # covers .github/workflows
+    schedule:
+      # Every day, weekends too, at 06:00 UTC. daily runs on weekdays only.
+      interval: cron
+      cronjob: "0 6 * * *"
+    cooldown:
+      default-days: 7
+      exclude:
+        - mattgrul/*
+    groups:
+      # Minor and patch updates share one pull request. A major update can
+      # break a caller, so it gets its own.
+      github-actions:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+    labels:
+      # Dependabot adds an ecosystem label by default. This list replaces
+      # it, so each pull request gets only this label.
+      - dependencies
+# END shared text
+
+  # The scan's action.yml pins actions too. Dependabot reads an
+  # action.yml only in a folder that an entry names, so this folder gets
+  # its own entry. It opens its own pull requests.
+  - package-ecosystem: github-actions
+    directory: /gitleaks-scan
+    schedule:
+      interval: cron
+      cronjob: "0 6 * * *"
+    cooldown:
+      default-days: 7
+      exclude:
+        - mattgrul/*
+    groups:
+      gitleaks-scan-actions:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+    labels:
+      - dependencies
+
+  # The gitleaks image that the scan's Dockerfile pins by digest.
+  - package-ecosystem: docker
+    directory: /gitleaks-scan
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      docker:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
+    labels:
+      - dependencies

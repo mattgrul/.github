@@ -1,0 +1,24 @@
+# The required check "checks": prove the rules of the gitleaks scan
+# before a release carries them to a caller. The job shows what the
+# shared rules catch and what they pass.
+name: checks
+
+on:
+  pull_request:
+  push:
+    branches: [main, "*.x"]
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Test the rules and the commit scan
+        run: gitleaks-scan/test
